@@ -94,7 +94,7 @@ class Iter(object):
         If these functions are not not specified or is None, they default to identity function.
 
         :rtype : Iter
-        :param keyfunc:
+        :param key:
         :param value:
         :return:
         """
@@ -124,7 +124,6 @@ class Iter(object):
         so as to reduce the iterable to a single value from left to right.
 
         :param reducing_function:
-        :param initial:
         :return:
         """
         return reduce(reducing_function, self)
@@ -170,7 +169,6 @@ class Iter(object):
         :param iterable:
         :return:
         """
-        self._state.append("union(...)")
         return Iter(it.chain(self._iter, *iterable))
 
     def slice(self, *args):
@@ -201,7 +199,6 @@ class Iter(object):
                 if i < max:
                     yield e
 
-        self._state.append("take({})".format(max))
         return Iter(func(self))
 
     def sort(self, cmp=None, key=None, reverse=False):
@@ -220,7 +217,6 @@ class Iter(object):
             for i in iterable:
                 yield i
 
-        self._state.append("sort()")
         return Iter(func(sorted_iterable))
 
     def top(self, k=1, key=None):
@@ -247,7 +243,6 @@ class Iter(object):
             elif i > k:
                 heapreplace(top_k_values, e)
 
-        self._state.append("top({})".format(k))
         return Iter(sorted(top_k_values, key=key, reverse=True))
 
     def count(self):
@@ -276,7 +271,6 @@ class Iter(object):
                     set_of_distinct_values.add(i)
                     yield i
 
-        self._state.append("distinct()")
         return Iter(func(self))
 
     def distinct_approx(self, init_cap=200, err_rate=0.001):
@@ -301,7 +295,6 @@ class Iter(object):
                     set_of_distinct_values.add(element)
                     yield element
 
-        self._state.append("distinct(init_cap={}, err_rate={})".format(init_cap, err_rate))
         return Iter(func(self))
 
     def cache(self):
@@ -338,6 +331,4 @@ class Iter(object):
         for item in self._iter:
             yield item
 
-    def __str__(self):
-        return "self." + ".".join(self._state)
 

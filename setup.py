@@ -8,5 +8,5 @@ setup(
     license='',
     author='JasonLiu',
     author_email='jason@jxnl.co',
-    description='A wrapper for iterators to allow for expressive chained transformations'
+    description='A wrapper for iterators to allow for expressive chained transformations', requires=['pybloom']
 )
