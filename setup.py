@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='IterPyPY',
+    name='itpy',
     version='0.0.1',
     packages=[''],
     url='',
