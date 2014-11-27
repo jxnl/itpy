@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-IterPyPY
-~~~~~~~~
+itpy
+~~~~
 
 Built on the back of itertools, <code>Iter</code> allows easy list processing through chaining methods.
 Everything acts as a lazy evaluated generating function so nothing happens until you call one
@@ -17,7 +17,7 @@ from collections import defaultdict
 import itertools as it
 
 
-class Iter(object):
+class Itpy(object):
     def __init__(self, iterable):
         self._iter = iterable
 
@@ -26,53 +26,53 @@ class Iter(object):
         """
         Make an iterator that computes the function using arguments from each of the iterables.
 
-        :rtype : Iter
+        :rtype : Itpy
         :param func, a -> b:
         :return:
         """
-        return Iter(it.imap(function, self))
+        return Itpy(it.imap(function, self))
 
     def flatmap(self, function_to_list):
         """
         Make an interator that returns elements from the lists produced by mapping function_to_list.
 
-        :rtype : Iter
+        :rtype : Itpy
         :param function_to_list, a -> [b...]:
         :return:
         """
-        return Iter(it.chain(*self.map(function_to_list)))
+        return Itpy(it.chain(*self.map(function_to_list)))
 
     def filter(self, predicate):
         """
         Make an iterator that filters elements from iterable returning only those for which the predicate is True.
         If predicate is None, return the items that are true.
 
-        :rtype : Iter
+        :rtype : Itpy
         :param predicate, a -> bool:
         :return:
         """
-        return Iter(it.ifilter(predicate, self))
+        return Itpy(it.ifilter(predicate, self))
 
     def filterfalse(self, predicate):
         """
         Make an iterator that filters elements from iterable returning only those for which the predicate is False.
         If predicate is None, return the items that are false
 
-        :rtype : Iter
+        :rtype : Itpy
         :param predicate, a -> bool:
         :return:
         """
-        return Iter(it.ifilterfalse(predicate, self))
+        return Itpy(it.ifilterfalse(predicate, self))
 
     def takewhile(self, predicate):
         """
         Make an iterator that returns elements from the iterable as long as the predicate is true.
 
-        :rtype : Iter
+        :rtype : Itpy
         :param predicate, a -> bool:
         :return:
         """
-        return Iter(it.takewhile(predicate, self))
+        return Itpy(it.takewhile(predicate, self))
 
     def dropwhile(self, predicate):
         """
@@ -81,11 +81,11 @@ class Iter(object):
         Note, the iterator does not produce any output until the predicate first becomes false,
         so it may have a lengthy start-up time.
 
-        :rtype : Iter
+        :rtype : Itpy
         :param predicate:
         :return:
         """
-        return Iter(it.dropwhile(predicate, self))
+        return Itpy(it.dropwhile(predicate, self))
 
     def groupby(self, key=None, value=None):
         """
@@ -93,7 +93,7 @@ class Iter(object):
         The key and value is computed each element by keyfunc and valfunc.
         If these functions are not not specified or is None, they default to identity function.
 
-        :rtype : Iter
+        :rtype : Itpy
         :param key:
         :param value:
         :return:
@@ -116,7 +116,7 @@ class Iter(object):
             for k in group_by_collection:
                 yield (k, list(group_by_collection[k]))
 
-        return Iter(func(self, key, value))
+        return Itpy(func(self, key, value))
 
     def reduce(self, reducing_function):
         """
@@ -133,13 +133,13 @@ class Iter(object):
         Make an iterator that returns the merged values for each key using an associative reduce function.
         The values contained in this Iter must be 2-tuples in the form (k, v) where v is Iterable.
 
-        :rtype: Iter
+        :rtype: Itpy
         :param reducing_function:
         :return:
         """
 
         def reduce_tuple(t):
-            return (t[0], Iter(t[1]).reduce(reducing_function))
+            return (t[0], Itpy(t[1]).reduce(reducing_function))
 
         return self.map(reduce_tuple)
 
@@ -148,7 +148,7 @@ class Iter(object):
         Make an iterator that returns the merged values for each key using an associative reduce function.
         The values contained in this Iter must be 2-tuples in the form (k, v) where v is Iterable.
 
-        :rtype: Iter
+        :rtype: Itpy
         :param reducing_function:
         :return:
         """
@@ -156,7 +156,7 @@ class Iter(object):
         return self \
             .groupby(lambda x: x[0], lambda x: x[1]) \
             .map(lambda (k, v):
-                 (k, Iter(v).reduce(reducing_function))
+                 (k, Itpy(v).reduce(reducing_function))
         )
 
     def union(self, *iterable):
@@ -169,7 +169,7 @@ class Iter(object):
         :param iterable:
         :return:
         """
-        return Iter(it.chain(self._iter, *iterable))
+        return Itpy(it.chain(self._iter, *iterable))
 
     def slice(self, *args):
         """
@@ -179,17 +179,17 @@ class Iter(object):
         iterator is exhausted, if at all; otherwise, it stops at the specified position. Unlike regular slicing,
         slice() does not support negative values for start, stop, or step.
 
-        :rtype : Iter
+        :rtype : Itpy
         :param args:
         :return:
         """
-        return Iter(it.islice(self._iter, *args))
+        return Itpy(it.islice(self._iter, *args))
 
     def take(self, max):
         """
         Make and iterator that returns the first max elements from the original iterable
 
-        :rtype : Iter
+        :rtype : Itpy
         :param max:
         :return:
         """
@@ -199,14 +199,14 @@ class Iter(object):
                 if i < max:
                     yield e
 
-        return Iter(func(self))
+        return Itpy(func(self))
 
     def sort(self, cmp=None, key=None, reverse=False):
         """
         Make and iterator that is sorted on a specific key, if key is None, sort on
         natural ordering.
 
-        :rtype: Iter
+        :rtype: Itpy
         :param key:
         :return:
         """
@@ -217,14 +217,14 @@ class Iter(object):
             for i in iterable:
                 yield i
 
-        return Iter(func(sorted_iterable))
+        return Itpy(func(sorted_iterable))
 
     def top(self, k=1, key=None):
         """
         Make an iterable of the top k elements of the original iterable sorted on keyfunc, if keyfunc is None sort
         on the natural ordering.
 
-        :rtype: Iter
+        :rtype: Itpy
         :type k: int
         :param k:
         :return:
@@ -243,7 +243,7 @@ class Iter(object):
             elif i > k:
                 heapreplace(top_k_values, e)
 
-        return Iter(sorted(top_k_values, key=key, reverse=True))
+        return Itpy(sorted(top_k_values, key=key, reverse=True))
 
     def count(self):
         """
@@ -258,7 +258,7 @@ class Iter(object):
         """
         Make an iterator with only the distinct elements of the previous.
 
-        :rtype : Iter
+        :rtype : Itpy
         :return:
         """
 
@@ -271,14 +271,14 @@ class Iter(object):
                     set_of_distinct_values.add(i)
                     yield i
 
-        return Iter(func(self))
+        return Itpy(func(self))
 
     def distinct_approx(self, init_cap=200, err_rate=0.001):
         """
         Make an iterator with only the distinct elements of the previous.
         Uses a Bloom filter for better space efficiency at the cost of false positive
 
-        :rtype : Iter
+        :rtype : Itpy
         :return:
         """
         try:
@@ -295,14 +295,14 @@ class Iter(object):
                     set_of_distinct_values.add(element)
                     yield element
 
-        return Iter(func(self))
+        return Itpy(func(self))
 
     def cache(self):
         """
         Clone the iterable to produce a deepcopy. This may be desired if we wish
         to maintain the state of the iterator while also calling a method with side effects.
 
-        :rtype : Iter
+        :rtype : Itpy
         :return:
         """
         return deepcopy(self)

@@ -11,7 +11,7 @@ For these tests you will notice that ._ is being called. this results in the ter
 
 import unittest
 
-from IterPyPy import Iter as _
+from itpy import Itpy as _
 
 
 class TestIterPyPy(unittest.TestCase):
@@ -70,14 +70,13 @@ class TestIterPyPy(unittest.TestCase):
 
     def test_reduce_pair_by_key(self):
         lst = _([(0, 0), (0, 2), (0, 4), (0, 6), (0, 8),
-                (1, 1), (1, 3), (1, 5), (1, 7), (1, 9)])
+                 (1, 1), (1, 3), (1, 5), (1, 7), (1, 9)])
 
         self.assertEqual(
             lst.reduce_pair_by_key(self.sumf)._,
             [(0, sum([0, 2, 4, 6, 8])),
              (1, sum([1, 3, 5, 7, 9]))]
         )
-
 
     def test_flat_reduce(self):
         lst = _(self.seq)
@@ -103,14 +102,14 @@ class TestIterPyPy(unittest.TestCase):
     def test_slice_start_end(self):
         lst = _(self.seq)
         self.assertEqual(
-            lst.slice(5,8)._,
+            lst.slice(5, 8)._,
             self.seq[5:8]
         )
 
     def test_slice_start_end_skip(self):
         lst = _(self.seq)
         self.assertEqual(
-            lst.slice(2,8,3)._,
+            lst.slice(2, 8, 3)._,
             self.seq[2:8:3]
         )
 
@@ -159,10 +158,10 @@ class TestIterPyPy(unittest.TestCase):
         )
 
     def test_distinct(self):
-        lst = _(self.seq*7)
+        lst = _(self.seq * 7)
         self.assertEqual(
             lst.count(),
-            7*10,
+            7 * 10,
         )
         self.assertEqual(
             lst.distinct()._,
@@ -170,10 +169,10 @@ class TestIterPyPy(unittest.TestCase):
         )
 
     def test_distinct_approx(self):
-        lst = _(self.seq*7)
+        lst = _(self.seq * 7)
         self.assertEqual(
             lst.count(),
-            7*10,
+            7 * 10,
         )
         self.assertEqual(
             lst.distinct_approx()._,
