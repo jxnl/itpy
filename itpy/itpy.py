@@ -116,6 +116,16 @@ class Itpy(object):
 
         return Itpy(func(self, key, value))
 
+    def kv_groupby(self):
+        """
+        Make an iterator that returns consecutive keys and groups from the iterable.
+        The elements must be a Itpy of 2-Tuples
+
+        :rtype : Itpy
+        :return:
+        """
+        return self.groupby(lambda x:x[0], lambda x:x[1])
+
     def reduce(self, reducing_function):
         """
         Get a merged value using an associative reduce function,

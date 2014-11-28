@@ -67,6 +67,16 @@ class test_itpy(unittest.TestCase):
              (1, [1, 3, 5, 7, 9])]
         )
 
+    def test_kv_groupby(self):
+        lst = _([(0, 0), (0, 2), (0, 4), (0, 6), (0, 8),
+                 (1, 1), (1, 3), (1, 5), (1, 7), (1, 9)])
+
+        self.assertEqual(
+            lst.kv_groupby()._,
+            [(0, [0, 2, 4, 6, 8]),
+             (1, [1, 3, 5, 7, 9])]
+        )
+
     def test_reduce_pair_by_key(self):
         lst = _([(0, 0), (0, 2), (0, 4), (0, 6), (0, 8),
                  (1, 1), (1, 3), (1, 5), (1, 7), (1, 9)])

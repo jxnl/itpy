@@ -17,8 +17,7 @@ Description: itpy.py
         
         ## Installation
         
-        Its not ready for PyPi yet so you'd have to just clone and run the following command. I can't promise you that I've 
-        got setup.py working properly but if doesn't work, make a pull request. <3
+        Its not ready for PyPi yet so you'd have to just clone and run the following command.
         
             python setup.py install
         
