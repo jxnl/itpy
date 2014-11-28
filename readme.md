@@ -18,28 +18,42 @@ Its not ready for PyPi yet so you'd have to just clone and run the following com
 For syntactic preference, you can either collect the generator into a list by calling `itpy.collect()` or by calling
 `itpy._` the `_` essential represents the termination of the transformation.
 
-    ```python
-    from itpy import itpy as _
+```python
+from itpy import itpy as _
+```
+##### apply a map!
+```python
+lst = _([1,2,3]).map(lambda x: x**2)._
+# [1,4,9]
+```
+##### apply a groupby on tuples!
+```python
+lst = _([(0, 0), (0, 2), (0, 4), (1, 1), (1, 3), (1, 5)]).kv_groupby()._
+# [(0, [(0, 0), (0, 2), (0, 4)]),
+   (1, [(1, 1), (1, 3), (1, 5)])]
+```
 
-    # apply a map!
-    lst = _([1,2,3]).map(lambda x: x**2)._
-    # [1,4,9]
-    
-    # apply a groupby on tuples!
-    lst = _([(0, 0), (0, 2), (0, 4), (1, 1), (1, 3), (1, 5)]).groupby()._
-    # [(0, [0, 2, 4]),
-       (1, [1, 3, 5])]
-       
-    # apply an arbitrary key function with a groupby!
-    lst = _(xrange(0,6).groupby(lambda x: x%2)._
-    # [(0, [0, 2, 4]),
-       (1, [1, 3, 5])]
-       
-    # it uses pybloom for memory effecient distincts
-    lst = _(huge_list_of_values).distinct()._
-    lst = _(huge_list_of_values).distinct_approx()._
-    
-    ```
+##### apply an arbitrary key function with a groupby!
+
+Note that for some methods they accept a `key` and `value` and are otherwise null.
+If they are `None` both will return the original object. If they are not, the list `[a,b,c]` will behave like `[(key(a), value(a)), (key(b), value(b)), (key(c), value(d))]`. 
+
+```python
+lst = _(xrange(0,6)).groupby(lambda x: x%2)._
+# [(0, [0, 2, 4]), (1, [1, 3, 5])]
+```
+##### takes advantage of some streaming algorithms!
+
+I'd love to see you contribute more streaming algorithms too!
+
+```python
+# uses a heapqueue!
+lst = _(huge_list_of_values).top(10)._
+# uses set.contains()!
+lst = _(huge_list_of_values).distinct()._
+# uses bloomfilter.contains()!
+lst = _(huge_list_of_values).distinct_approx()._
+```
     
 ## Documentation, pydoc is best.
 
