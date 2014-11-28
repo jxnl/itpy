@@ -262,7 +262,30 @@ class Itpy(object):
         :rtype: int
         :return:
         """
-        return len(self._iter)
+        size = 0
+        for _ in self: size+=1
+        return size
+
+    def sample_without_replacement(self, max_size):
+        """
+         Make an iterator of `max_size` randomly sampled elements from the original
+
+        :param max_size:
+        :return:
+        """
+
+        from random import randint
+
+        reservoir = []
+
+        for (i, item) in enumerate(self):
+            switch = randint(0, 1)
+            if len(reservoir) < max_size:
+                reservoir.append(item)
+            elif switch < max_size:
+                reservoir[switch] = item
+
+        return Itpy(reservoir)
 
     def distinct(self):
         """

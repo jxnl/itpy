@@ -129,6 +129,13 @@ class test_itpy(unittest.TestCase):
             self.seq[:3]
         )
 
+    def test_over_take(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.take(3000)._,
+            self.seq
+        )
+
     def test_sort(self):
         lst = _(self.seq)
         self.assertEqual(
@@ -141,6 +148,14 @@ class test_itpy(unittest.TestCase):
         self.assertEqual(
             lst.top(2)._,
             sorted(self.seq, reverse=True)[:2]
+        )
+
+
+    def test_over_top(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.top(10000)._,
+            sorted(self.seq, reverse=True)
         )
 
     def test_count(self):
@@ -186,6 +201,31 @@ class test_itpy(unittest.TestCase):
         self.assertEqual(
             lst.distinct_approx()._,
             self.seq,
+        )
+
+    def test_small_sampling(self):
+        lst = _(xrange(1000))
+        self.assertEqual(
+            lst.sample_without_replacement(10).count(),
+            10,
+        )
+
+    def test_equal_sampling(self):
+        lst = _(xrange(100))
+        self.assertEqual(
+            lst.sample_without_replacement(100).count(),
+            100,
+        )
+        self.assertEqual(
+            lst.sample_without_replacement(100).distinct().count(),
+            100,
+        )
+
+    def test_over_sampling(self):
+        lst = _(xrange(100))
+        self.assertEqual(
+            lst.sample_without_replacement(1000).count(),
+            100,
         )
 
 
