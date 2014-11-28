@@ -1,13 +1,18 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
-setup(
-    name='itpy',
-    version='0.0.1',
-    packages=['itpy'],
-    url='',
-    license='',
-    author='JasonLiu',
-    author_email='jason@jxnl.co',
-    description='A wrapper for iterators to allow for expressive chained transformations',
-    requires=['pybloom']
-)
+version = '0.1'
+
+setup(name='itpy',
+      version=version,
+      description='A wrapper for iterators to allow for expressive chained transformations',
+      long_description=open("readme.md").read(),
+      author='Jason Liu',
+      author_email='jason@jxnl.co',
+      url='https://github.com/jxnl/itpy',
+      license='MIT',
+      packages=['itpy'],
+      include_package_data=True,
+      install_requires=[
+          ['pybloom']
+      ],
+      )
