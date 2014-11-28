@@ -3,15 +3,14 @@
 """
 itpy
 ~~~~
-
-Built on the back of itertools, <code>Iter</code> allows easy list processing through chaining methods.
-Everything acts as a lazy evaluated generating function so nothing happens until you call one
-of the methods with side effects.
+Built on the back of itertools, `itpy` allows easy list processing through chaining methods.
+Everything is a lazy evaluated generating function so nothing happens until you call a method
+with side effects. This allows for a fast memory effecient 'keep what you need' way of processing
+large ammounts of data!
 
 """
 
 from copy import deepcopy
-from heapq import heapreplace, heapify
 from collections import defaultdict
 
 import itertools as it
@@ -26,7 +25,7 @@ class Itpy(object):
         Make an iterator that computes the function using arguments from each of the iterables.
 
         :rtype : Itpy
-        :param func, a -> b:
+        :param func:
         :return:
         """
         return Itpy(it.imap(function, self))
@@ -36,7 +35,7 @@ class Itpy(object):
         Make an interator that returns elements from the lists produced by mapping function_to_list.
 
         :rtype : Itpy
-        :param function_to_list, a -> [b...]:
+        :param function_to_list:
         :return:
         """
         return Itpy(it.chain(*self.map(function_to_list)))
@@ -47,7 +46,7 @@ class Itpy(object):
         If predicate is None, return the items that are true.
 
         :rtype : Itpy
-        :param predicate, a -> bool:
+        :param predicate:
         :return:
         """
         return Itpy(it.ifilter(predicate, self))
@@ -58,7 +57,7 @@ class Itpy(object):
         If predicate is None, return the items that are false
 
         :rtype : Itpy
-        :param predicate, a -> bool:
+        :param predicate:
         :return:
         """
         return Itpy(it.ifilterfalse(predicate, self))
@@ -68,7 +67,7 @@ class Itpy(object):
         Make an iterator that returns elements from the iterable as long as the predicate is true.
 
         :rtype : Itpy
-        :param predicate, a -> bool:
+        :param predicate:
         :return:
         """
         return Itpy(it.takewhile(predicate, self))
@@ -218,29 +217,31 @@ class Itpy(object):
 
         return Itpy(func(sorted_iterable))
 
-    def top(self, k=1, key=None):
+    def top(self, max_size=1, key=None):
         """
-        Make an iterable of the top k elements of the original iterable sorted on keyfunc, if keyfunc is None sort
+        Make an iterable of the top max_size elements of the original iterable sorted on keyfunc, if keyfunc is None sort
         on the natural ordering.
 
         :rtype: Itpy
-        :type k: int
-        :param k:
+        :param max_size:
         :return:
         """
 
+        # An import is done here to avoid polluting the namespace
+        from heapq import heapreplace, heapify
+
         top_k_values = []
 
-        if k == 1:
+        if max_size == 1:
             return max(self._iter, key)
 
-        for i, e in enumerate(self._iter):
-            if i < k:
-                top_k_values.append(e)
-            elif i == k:
+        for idx, item in enumerate(self._iter):
+            if idx < max_size:
+                top_k_values.append(item)
+            elif idx == max_size:
                 heapify(top_k_values)
-            elif i > k:
-                heapreplace(top_k_values, e)
+            elif idx > max_size:
+                heapreplace(top_k_values, item)
 
         return Itpy(sorted(top_k_values, key=key, reverse=True))
 
