@@ -20,18 +20,18 @@ For syntactic preference, you can either collect the generator into a list by ca
 
 ```python
 # this is only for personal preference
-from itpy import Itpy as _
+from itpy import Itpy
 ```
 ##### Apply a map!
 ```python
-lst = _([1,2,3]).map(lambda x: x**2)._
+lst = Itpy([1,2,3]).map(lambda x: x**2).collect()
 # [1,4,9]
 ```
 ##### Apply a groupby on tuples!
 ```python
-lst = _([(0, 0), (0, 2), (0, 4), (1, 1), (1, 3), (1, 5)]).kv_groupby()._
+lst = Itpy([(0, 0), (0, 2), (0, 4), (1, 1), (1, 3), (1, 5)]).kv_groupby().collect()
 # [(0, [(0, 0), (0, 2), (0, 4)]),
-   (1, [(1, 1), (1, 3), (1, 5)])]
+#  (1, [(1, 1), (1, 3), (1, 5)])]
 ```
 
 ##### Apply an arbitrary key function under a groupby!
@@ -40,8 +40,9 @@ Note that for some methods they accept a `key` and `value` and are otherwise nul
 If they are `None` both will return the original object. If they are not, each element will look like a pair `Tuple(key(x), value(x))`
 
 ```python
-lst = _(xrange(0,6)).groupby(lambda x: x%2)._
-# [(0, [0, 2, 4]), (1, [1, 3, 5])]
+lst = Itpy(xrange(0,6)).groupby(lambda x: x%2)..collect()
+# [(0, [0, 2, 4]),
+#  (1, [1, 3, 5])]
 ```
 ##### Takes advantage of some streaming algorithms!
 
@@ -49,13 +50,13 @@ I'd love to see you contribute more streaming algorithms too!
 
 ```python
 # uses a heapqueue!
-lst = _(huge_list_of_values).top(10)._
+lst = Itpy(huge_list_of_values).top(10).collect()
 # uses set.contains()!
-lst = _(huge_list_of_values).distinct()._
+lst = Itpy(huge_list_of_values).distinct().collect()
 # uses bloomfilter.contains()!
-lst = _(huge_list_of_values).distinct_approx()._
+lst = Itpy(huge_list_of_values).distinct_approx().collect()
 # uses reservoir sampling!
-lst = _(huge_list_of_values).sample_without_replacement(10)._
+lst = Itpy(huge_list_of_values).sample_without_replacement(10).collect()
 ```
 
 ## Digging deeper
