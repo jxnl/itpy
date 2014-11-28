@@ -21,22 +21,22 @@ For syntactic preference, you can either collect the generator into a list by ca
 ```python
 from itpy import itpy as _
 ```
-##### apply a map!
+##### Apply a map!
 ```python
 lst = _([1,2,3]).map(lambda x: x**2)._
 # [1,4,9]
 ```
-##### apply a groupby on tuples!
+##### Apply a groupby on tuples!
 ```python
 lst = _([(0, 0), (0, 2), (0, 4), (1, 1), (1, 3), (1, 5)]).kv_groupby()._
 # [(0, [(0, 0), (0, 2), (0, 4)]),
    (1, [(1, 1), (1, 3), (1, 5)])]
 ```
 
-##### apply an arbitrary key function with a groupby!
+##### Apply an arbitrary key function under a groupby!
 
 Note that for some methods they accept a `key` and `value` and are otherwise null.
-If they are `None` both will return the original object. If they are not, the list `[a,b,c]` will behave like `[(key(a), value(a)), (key(b), value(b)), (key(c), value(d))]`. 
+If they are `None` both will return the original object. If they are not, each element will look like a pair `Tuple(key(x), value(x))`
 
 ```python
 lst = _(xrange(0,6)).groupby(lambda x: x%2)._
