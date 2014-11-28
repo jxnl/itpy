@@ -1,7 +1,6 @@
 setup.cfg
 setup.py
 itpy/__init__.py
-itpy/itpy.py
 itpy.egg-info/PKG-INFO
 itpy.egg-info/SOURCES.txt
 itpy.egg-info/dependency_links.txt
