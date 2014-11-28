@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-TestIterPyPy
-~~~~~~~~~~~~
+test_itpy
+~~~~~~~~~
 
 These are some tests... Nothing to see here unless you also want to take a look at what each thing will do.
 For these tests you will notice that ._ is being called. this results in the termination of a series of transformations
@@ -13,8 +13,7 @@ import unittest
 
 from itpy import Itpy as _
 
-
-class TestIterPyPy(unittest.TestCase):
+class test_itpy(unittest.TestCase):
     def setUp(self):
         self.seq = range(10)
         self.mapf = lambda x: x ** 2

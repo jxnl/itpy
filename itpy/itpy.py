@@ -21,7 +21,6 @@ class Itpy(object):
     def __init__(self, iterable):
         self._iter = iterable
 
-
     def map(self, function):
         """
         Make an iterator that computes the function using arguments from each of the iterables.
