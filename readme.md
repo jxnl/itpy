@@ -15,8 +15,7 @@ Its not ready for PyPi yet so you'd have to just clone and run the following com
 
 ## Getting Started
 
-For syntactic preference, you can either collect the generator into a list by calling `itpy.collect()` or by calling
-`itpy._` the `_` essential represents the termination of the transformation.
+For syntactic preference, you can either collect the generator into a list by calling `itpy._`
 
 ```python
 # this is only for personal preference
@@ -24,12 +23,13 @@ from itpy import Itpy
 ```
 ##### Apply a map!
 ```python
-lst = Itpy([1,2,3]).map(lambda x: x**2).collect()
+lst = Itpy([1,2,3]).map(lambda x: x**2)._
 # [1,4,9]
 ```
 ##### Apply a groupby on tuples!
 ```python
-lst = Itpy([(0, 0), (0, 2), (0, 4), (1, 1), (1, 3), (1, 5)]).kv_groupby().collect()
+# note that without a keyf, valuef, we implicitly assume they are tuples.
+lst = Itpy([(0, 0), (0, 2), (0, 4), (1, 1), (1, 3), (1, 5)]).groupby()._
 # [(0, [(0, 0), (0, 2), (0, 4)]),
 #  (1, [(1, 1), (1, 3), (1, 5)])]
 ```
@@ -40,7 +40,7 @@ Note that for some methods they accept a `key` and `value` and are otherwise nul
 If they are `None` both will return the original object. If they are not, each element will look like a pair `Tuple(key(x), value(x))`
 
 ```python
-lst = Itpy(xrange(0,6)).groupby(lambda x: x%2)..collect()
+lst = Itpy(xrange(0,6)).groupby(lambda x: x%2)._
 # [(0, [0, 2, 4]),
 #  (1, [1, 3, 5])]
 ```
@@ -50,13 +50,11 @@ I'd love to see you contribute more streaming algorithms too!
 
 ```python
 # uses a heapqueue!
-lst = Itpy(huge_list_of_values).top(10).collect()
+lst = Itpy(huge_list_of_values).top(10)._
 # uses set.contains()!
-lst = Itpy(huge_list_of_values).distinct().collect()
-# uses bloomfilter.contains()!
-lst = Itpy(huge_list_of_values).distinct_approx().collect()
+lst = Itpy(huge_list_of_values).distinct()._
 # uses reservoir sampling!
-lst = Itpy(huge_list_of_values).sample_without_replacement(10).collect()
+lst = Itpy(huge_list_of_values).sample_without_replacement(10)._
 ```
 
 ## Digging deeper
