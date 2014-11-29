@@ -9,6 +9,7 @@ This module contains functions that compute summaries over the iterable.
 """
 from __future__ import division
 from collections import Counter
+from functools import reduce as rd
 
 def size(iterable):
     """
@@ -21,7 +22,7 @@ def size(iterable):
         counter += 1
     return counter
 
-def reduce_(iterable, reducer):
+def reduce(iterable, reducer):
     """
     Get a merged value using an associative reduce function,
     so as to reduce the iterable to a single value from left to right.
@@ -30,7 +31,7 @@ def reduce_(iterable, reducer):
     :param reducer:
     """
 
-    value = reduce(reducer, iterable)
+    value = rd(reducer, iterable)
 
     return value
 

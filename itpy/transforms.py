@@ -16,7 +16,7 @@ from lambdas import identity, keyf, valuef
 import itertools as it
 
 
-def map_(iterable, function):
+def map(iterable, function):
     """
     Make an iterator that computes the function using arguments
     from the original iterable.
@@ -35,10 +35,10 @@ def flatmap(iterable, function_to_list):
     :param iterable:
     :param function_to_list:
     """
-    return iter(it.chain(*map_(iterable, function_to_list)))
+    return iter(it.chain(*map(iterable, function_to_list)))
 
 
-def filter_(iterable, predicate):
+def filter(iterable, predicate):
     """
     Make an iterator that filters elements from iterable returning only those 
     for which the predicate is True
@@ -149,7 +149,7 @@ def union(iterable, *iterables):
     return iter(it.chain(iterable, *iterables))
 
 
-def slice_(iterable, *args):
+def slice(iterable, *args):
     """
     Make an iterator that returns selected elements from the iterable.
     If start is non-zero, then elements from the iterable are skipped 

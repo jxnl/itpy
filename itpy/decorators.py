@@ -27,14 +27,15 @@ class iter_wraps(object):
 
     def __call__(self, f):
 
-        if self.transform.__doc__:
-            f.__doc__ == self.transform.__doc__
-
         @wraps(f)
         def wrapped(*args, **kwargs):
             iter = f(*args, **kwargs)
             iter._iter = self.transform(*args, **kwargs)
             return iter
+
+        if self.transform.__doc__:
+            wrapped.__name__ = self.transform.__name__
+            wrapped.__doc__ = self.transform.__doc__
 
         return wrapped
 
@@ -55,11 +56,12 @@ class term_wraps(object):
 
     def __call__(self, f):
 
-        if self.transform.__doc__:
-            f.__doc__ == self.transform.__doc__
-
         @wraps(f)
         def wrapped(*args, **kwargs):
             return self.transform(*args, **kwargs)
+
+        if self.transform.__doc__:
+            wrapped.__name__ = self.transform.__name__
+            wrapped.__doc__ = self.transform.__doc__
 
         return wrapped
