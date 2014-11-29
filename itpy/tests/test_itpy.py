@@ -35,8 +35,15 @@ class test_itpy(unittest.TestCase):
     def test_filter(self):
         lst = _(self.seq)
         self.assertEqual(
-            lst.filter(self.mapf)._,
-            filter(self.mapf, self.seq)
+            lst.filter(self.filterf)._,
+            filter(self.filterf, self.seq)
+        )
+
+    def test_filter_false(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.filterfalse(self.filterf)._,
+            filter(lambda x: not self.filterf(x), self.seq)
         )
 
     def test_fmap(self):
@@ -131,6 +138,13 @@ class test_itpy(unittest.TestCase):
             sorted(self.seq, reverse=True)[:2]
         )
 
+    def test_one_top(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.top()._[0],
+            max(self.seq)
+        )
+
 
     def test_over_top(self):
         lst = _(self.seq)
@@ -139,6 +153,39 @@ class test_itpy(unittest.TestCase):
             sorted(self.seq, reverse=True)
         )
 
+    def test_sample_without_replacement(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.sample_without_replacement(4).size(),
+            4
+        )
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_distinct(self):
+        lst = _(self.seq*2)
+        self.assertEqual(
+            lst.distinct()._,
+            list(set(self.seq))
+        )
+
+    def test_reduce(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.reduce(self.sumf),
+            reduce(self.sumf, self.seq)
+        )
+
+    def test_reduceby(self):
+        lst = _([(1,1), (1,1), (1,1), (2,1)])
+        self.assertEqual(
+            lst.reduceby(self.sumf)._,
+            [(1, 3), (2,1)]
+        )
+
+    def test_size(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.size(),
+            len(self.seq)
+        )
+
+

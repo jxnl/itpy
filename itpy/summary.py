@@ -10,6 +10,16 @@ This module contains functions that compute summaries over the iterable.
 from __future__ import division
 from collections import Counter
 
+def size(iterable):
+    """
+    Obtain the size of the iterable
+
+    :param iterable:
+    """
+    counter = 0
+    for i in iterable:
+        counter += 1
+    return counter
 
 def reduce_(iterable, reducer):
     """

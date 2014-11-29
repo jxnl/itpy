@@ -12,8 +12,6 @@ large ammounts of data!
 """
 from __future__ import print_function
 
-from copy import deepcopy
-
 from decorators import iter_wraps, term_wraps
 from lambdas import keyf, valuef, identity
 
@@ -23,7 +21,6 @@ import sketch
 
 
 class Itpy(object):
-
     VALUE = None
 
     def __init__(self, iterable=None):
@@ -95,6 +92,10 @@ class Itpy(object):
 
     @term_wraps(summary.reduce_)
     def reduce(self, reducer):
+        return Itpy.VALUE
+
+    @term_wraps(summary.size)
+    def size(self):
         return Itpy.VALUE
 
     def __iter__(self):

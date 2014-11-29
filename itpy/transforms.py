@@ -126,7 +126,7 @@ def reduceby(iterable, reducer, key=keyf, value=valuef):
         for element in iterable_:
             (k, v) = (key_(element), value_(element))
 
-            if key in group_by:
+            if k in group_by:
                 group_by[k] = reducer_(group_by[k], v)
             else:
                 group_by[k] = v
@@ -210,9 +210,6 @@ def top(iterable, max_size=1, key=None):
     from heapq import heapreplace, heapify
 
     top_k_values = []
-
-    if max_size == 1:
-        return max(iterable, key)
 
     for idx, item in enumerate(iterable):
         if idx < max_size:
