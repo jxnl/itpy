@@ -22,6 +22,8 @@ def size(iterable):
         counter += 1
     return counter
 
+
+# noinspection PyShadowingBuiltins
 def reduce(iterable, reducer):
     """
     Get a merged value using an associative reduce function,
@@ -108,14 +110,14 @@ def online_variance(iterable):
     """
     size_accumilator = 0
     current_mean = 0
-    M2 = 0
+    m2 = 0
 
     try:
         for x in iterable:
             size_accumilator += 1
             difference = x - current_mean
             current_mean += difference / size_accumilator
-            M2 += difference * (x - current_mean)
+            m2 += difference * (x - current_mean)
     except KeyboardInterrupt:
         pass
 
@@ -123,5 +125,5 @@ def online_variance(iterable):
     if (size_accumilator < 2):
         return 0
 
-    variance = M2 / (size_accumilator - 1)
+    variance = m2 / (size_accumilator - 1)
     return variance

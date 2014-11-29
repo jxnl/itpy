@@ -16,6 +16,7 @@ from lambdas import identity, keyf, valuef
 import itertools as it
 
 
+# noinspection PyShadowingBuiltins
 def map(iterable, function):
     """
     Make an iterator that computes the function using arguments
@@ -38,6 +39,7 @@ def flatmap(iterable, function_to_list):
     return iter(it.chain(*map(iterable, function_to_list)))
 
 
+# noinspection PyShadowingBuiltins
 def filter(iterable, predicate):
     """
     Make an iterator that filters elements from iterable returning only those 
@@ -149,6 +151,7 @@ def union(iterable, *iterables):
     return iter(it.chain(iterable, *iterables))
 
 
+# noinspection PyShadowingBuiltins
 def slice(iterable, *args):
     """
     Make an iterator that returns selected elements from the iterable.

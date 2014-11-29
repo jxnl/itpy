@@ -42,6 +42,8 @@ def frequency_approx(iterable, table_width=1000, n_hashs=10):
     :param iterable:
     :param table_width:
     :param n_hashs:
+
+    :see: http://en.wikipedia.org/wiki/Count-min_sketch
     """
     raise NotImplementedError
 

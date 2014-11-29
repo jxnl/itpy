@@ -9,7 +9,7 @@ This module contains some helper classes and gives  names to lambda expressions 
 """
 
 def not_none(x):
-    return (x != None)
+    return (x is not None)
 
 def identity(x):
     return x
