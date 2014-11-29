@@ -13,6 +13,7 @@ import unittest
 
 from itpy import Itpy as _
 
+# noinspection PyPep8Naming
 class test_itpy(unittest.TestCase):
 
     def setUp(self):

@@ -9,6 +9,7 @@ This module contains functions that compute summaries over the iterable.
 """
 from __future__ import division
 from collections import Counter
+from functools import reduce as rd
 
 def size(iterable):
     """
@@ -21,7 +22,9 @@ def size(iterable):
         counter += 1
     return counter
 
-def reduce_(iterable, reducer):
+
+# noinspection PyShadowingBuiltins
+def reduce(iterable, reducer):
     """
     Get a merged value using an associative reduce function,
     so as to reduce the iterable to a single value from left to right.
@@ -30,7 +33,7 @@ def reduce_(iterable, reducer):
     :param reducer:
     """
 
-    value = reduce(reducer, iterable)
+    value = rd(reducer, iterable)
 
     return value
 
@@ -107,14 +110,14 @@ def online_variance(iterable):
     """
     size_accumilator = 0
     current_mean = 0
-    M2 = 0
+    m2 = 0
 
     try:
         for x in iterable:
             size_accumilator += 1
             difference = x - current_mean
             current_mean += difference / size_accumilator
-            M2 += difference * (x - current_mean)
+            m2 += difference * (x - current_mean)
     except KeyboardInterrupt:
         pass
 
@@ -122,5 +125,5 @@ def online_variance(iterable):
     if (size_accumilator < 2):
         return 0
 
-    variance = M2 / (size_accumilator - 1)
+    variance = m2 / (size_accumilator - 1)
     return variance
