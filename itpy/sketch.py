@@ -4,8 +4,13 @@
 itpy.sketch
 ~~~~~~~~~~~
 
+This module contains functions that compute sketchs over the iterable.
+This means that to allow for sublinear space effeciency we trade a bit of accuracy for performance
+
 """
+
 from pybloom import ScalableBloomFilter
+
 
 def count_distinct_approx(iterable, init_cap=200, err_rate=0.001):
     """
@@ -15,7 +20,6 @@ def count_distinct_approx(iterable, init_cap=200, err_rate=0.001):
     :param iterable:
     :param init_cap:
     :param err_rate:
-    :return: the number of distinct values
     """
 
     counter = 0
@@ -29,17 +33,17 @@ def count_distinct_approx(iterable, init_cap=200, err_rate=0.001):
 
     return counter
 
+
 def frequency_approx(iterable, table_width=1000, n_hashs=10):
     """
     Count the frequency of each type of event. This implementation uses a count-min to approximate the
     occurences of each distinct alue found in this iterable.
 
     :param iterable:
-    :return:
+    :param table_width:
+    :param n_hashs:
     """
-
-
-
+    raise NotImplementedError
 
 
 def to_bloomfilter(iterable, init_cap=200, err_rate=0.001):
@@ -47,6 +51,9 @@ def to_bloomfilter(iterable, init_cap=200, err_rate=0.001):
     Converts the iterable into a ScalableBloomFilter
     
     :rtype : pybloom.ScalableBloomFilter
+    :param iterable:
+    :param init_cap:
+    :param err_rate:
     """
 
     bloom = ScalableBloomFilter(init_cap, err_rate)

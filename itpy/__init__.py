@@ -3,16 +3,20 @@
 """
 itpy
 ~~~~
+
 Built on the back of itertools, `itpy` allows easy list processing through chaining methods.
 Everything is a lazy evaluated generating function so nothing happens until you call a method
 with side effects. This allows for a fast memory effecient 'keep what you need' way of processing
 large ammounts of data!
 
 """
+from __future__ import print_function
 
-from utils import keyf, valuef, identity
+from copy import deepcopy
 
 from decorators import iter_wraps, term_wraps
+from lambdas import keyf, valuef, identity
+
 import transforms
 import summary
 import sketch
@@ -24,6 +28,13 @@ class Itpy(object):
 
     def __init__(self, iterable=None):
         self._iter = iterable
+
+    def _(self):
+        return list(self)
+
+    @iter_wraps(summary.size)
+    def size(self):
+        return Itpy.VALUE
 
     @iter_wraps(transforms.map_)
     def map(self, function):
@@ -73,7 +84,7 @@ class Itpy(object):
     def sort(self, cmp=None, key=None, reverse=False):
         return Itpy()
 
-    @iter_wraps(transforms.slice)
+    @iter_wraps(transforms.slice_)
     def slice(self, *args):
         return Itpy()
 
@@ -85,35 +96,15 @@ class Itpy(object):
     def distinct(self):
         return Itpy()
 
-    @iter_wraps(transforms.distinct_approx)
-    def distinct_approx(self, init_cap=200, err_rate=0.001):
-        return Itpy()
-
-    @iter_wraps(transforms.cache)
-    def cache(self):
-        return Itpy()
-
     @term_wraps(summary.reduce_)
     def reduce(self, reducer):
         return Itpy.VALUE
 
-    @term_wraps(summary.count)
-    def count(self):
+    @term_wraps(summary.size)
+    def __len__(self):
         return Itpy.VALUE
 
-    @term_wraps(summary.count_distinct)
-    def count_distinct(self):
-        return Itpy.VALUE
-
-    @term_wraps(sketch.count_distinct_approx)
-    def count_distinct_approx(self):
-        return Itpy.VALUE
-
-    def collect(self):
-        return
 
     def __iter__(self):
         for item in self._iter:
             yield item
-
-

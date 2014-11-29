@@ -10,17 +10,20 @@ and an iterable.
 
 """
 
-from copy import deepcopy
 from collections import defaultdict
+from lambdas import identity, keyf, valuef
+
 import itertools as it
 
-from itpy.lambdas import identity, keyf, valuef
 
 
 def map_(iterable, function):
     """
     Make an iterator that computes the function using arguments
     from the original iterable.
+
+    :param iterable:
+    :param function:
     """
     return iter(it.imap(function, iterable))
 
@@ -29,6 +32,9 @@ def flatmap(iterable, function_to_list):
     """
     Make an interator that returns the elements of the lists produced
     by mapping function_to_list onto the original iterable.
+
+    :param iterable:
+    :param function_to_list:
     """
     return iter(it.chain(*map_(iterable, function_to_list)))
 
@@ -38,6 +44,9 @@ def filter_(iterable, predicate):
     Make an iterator that filters elements from iterable returning only those 
     for which the predicate is True
     If predicate is None, return the items that are true.
+
+    :param iterable:
+    :param predicate:
     """
     return iter(it.ifilter(predicate, iterable))
 
@@ -47,6 +56,9 @@ def filterfalse(iterable, predicate):
     Make an iterator that filters elements from iterable returning only those 
     for which the predicate is False.
     If predicate is None, return the items that are false
+
+    :param iterable:
+    :param predicate:
     """
     return iter(it.ifilterfalse(predicate, iterable))
 
@@ -55,6 +67,9 @@ def takewhile(iterable, predicate):
     """
     Make an iterator that returns elements from the iterable as long as the 
     predicate is true.
+
+    :param iterable:
+    :param predicate:
     """
     return iter(it.takewhile(predicate, iterable))
 
@@ -66,6 +81,9 @@ def dropwhile(iterable, predicate):
 
     Note, the iterator does not produce any output until the predicate 
     first becomes false, so it may have a lengthy start-up time.
+
+    :param iterable:
+    :param predicate:
     """
     return iter(it.dropwhile(predicate, iterable))
 
@@ -75,6 +93,10 @@ def groupby(iterable, key=identity, value=identity):
     Make an iterator that returns consecutive keys and groups from the iterable
     The key and value is computed each element by keyfunc and valfunc.
     If these functions are not not specified or is None, default to identity function.
+
+    :param iterable:
+    :param key:
+    :param value:
     """
 
     def grouping(iterable_, key_, value_):
@@ -93,6 +115,11 @@ def reduceby(iterable, reducer, key=keyf, value=valuef):
     Make an iterator that returns the merged values for each key using an 
     associative reduce function.The values contained in this iterable must be 
     2-tuples in the form (k, v).
+
+    :param iterable:
+    :param reducer:
+    :param key:
+    :param value:
     """
     def reducing(iterable_, reducer_, key_, value_):
         group_by = dict()
@@ -116,6 +143,9 @@ def union(iterable, *iterables):
     Make an iterator that returns elements from the first iterable until it
     is exhausted, then proceeds to the next iterable, until all of the iterables
     are exhausted. Used for treating consecutive sequences as a single sequence.
+
+    :param iterable:
+    :param iterables:
     """
     return iter(it.chain(iterable, *iterables))
 
@@ -130,6 +160,9 @@ def slice_(iterable, *args):
     If stop is None, then iteration continues until the iterator is exhausted;
     otherwise, it stops at the specified position. Unlike regular slicing, 
     slice() does not support negative values for start, stop, or step.
+
+    :param iterable:
+    :param args:
     """
     return iter(it.islice(iterable, *args))
 
@@ -137,8 +170,10 @@ def slice_(iterable, *args):
 def take(iterable, max):
     """
     Make and iterator that returns the first max elements from the original iterable
-    """
 
+    :param iterable:
+    :param max:
+    """
     def taking(iterable):
         for i, e in enumerate(iterable):
             if i < max:
@@ -151,6 +186,11 @@ def sort(iterable, cmp=None, key=None, reverse=False):
     """
     Make and iterator that is sorted on a specific key, if key is None, sort on
     natural ordering.
+
+    :param iterable:
+    :param cmp:
+    :param key:
+    :param reverse:
     """
     sorted_iterable = sorted(iterable._iter, cmp=cmp, key=key, reverse=reverse)
 
@@ -161,6 +201,10 @@ def top(iterable, max_size=1, key=None):
     """
     Make an iterable of the top max_size elements of the original iterable sorted on keyfunc, if keyfunc is None sort
     on the natural ordering.
+
+    :param iterable:
+    :param max_size:
+    :param key:
     """
 
     # An import is done here to avoid polluting the namespace
@@ -186,6 +230,9 @@ def top(iterable, max_size=1, key=None):
 def sample_without_replacement(iterable, max_size):
     """
     Make an iterator of `max_size` of randomly sampled elements from the original
+
+    :param iterable:
+    :param max_size:
     """
     from random import randint
 
@@ -204,11 +251,11 @@ def sample_without_replacement(iterable, max_size):
 def distinct(iterable):
     """
     Make an iterator with only the distinct elements of the previous.
+
+    :param iterable:
     """
 
     def distincting(iterable_):
-        # This iterator simply puts elements into a set and looks for
-        # simple set membership. Bloom filter implementation may be of interest
         set_of_distinct_values = set()
         for i in iterable_:
             if i not in set_of_distinct_values:
@@ -216,26 +263,3 @@ def distinct(iterable):
                 yield i
 
     return distincting(iterable)
-
-
-def cache(iterable):
-    """
-    Clone the iterable to produce a deepcopy. This may be desired if we wish
-    to maintain the state of the iterator while also calling a method with side effects.
-    """
-    return deepcopy(iterable)
-
-
-def collect(iterable):
-    """
-    Collect the iterable back into a list.
-    """
-    return list(iterable)
-
-
-def stdout(iterable):
-    """
-    Print out all the elemnts one by one.
-    """
-    for i in iterable:
-        print i
