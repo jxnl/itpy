@@ -14,6 +14,7 @@ import unittest
 from itpy import Itpy as _
 
 class test_itpy(unittest.TestCase):
+
     def setUp(self):
         self.seq = range(10)
         self.mapf = lambda x: x ** 2
@@ -34,8 +35,15 @@ class test_itpy(unittest.TestCase):
     def test_filter(self):
         lst = _(self.seq)
         self.assertEqual(
-            lst.filter(self.mapf)._,
-            filter(self.mapf, self.seq)
+            lst.filter(self.filterf)._,
+            filter(self.filterf, self.seq)
+        )
+
+    def test_filter_false(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.filterfalse(self.filterf)._,
+            filter(lambda x: not self.filterf(x), self.seq)
         )
 
     def test_fmap(self):
@@ -65,26 +73,6 @@ class test_itpy(unittest.TestCase):
             lst.groupby(self.evenf)._,
             [(0, [0, 2, 4, 6, 8]),
              (1, [1, 3, 5, 7, 9])]
-        )
-
-    def test_kv_groupby(self):
-        lst = _([(0, 0), (0, 2), (0, 4), (0, 6), (0, 8),
-                 (1, 1), (1, 3), (1, 5), (1, 7), (1, 9)])
-
-        self.assertEqual(
-            lst.kv_groupby()._,
-            [(0, [0, 2, 4, 6, 8]),
-             (1, [1, 3, 5, 7, 9])]
-        )
-
-    def test_reduce_pair_by_key(self):
-        lst = _([(0, 0), (0, 2), (0, 4), (0, 6), (0, 8),
-                 (1, 1), (1, 3), (1, 5), (1, 7), (1, 9)])
-
-        self.assertEqual(
-            lst.reduce_pair_by_key(self.sumf)._,
-            [(0, sum([0, 2, 4, 6, 8])),
-             (1, sum([1, 3, 5, 7, 9]))]
         )
 
     def test_flat_reduce(self):
@@ -150,6 +138,13 @@ class test_itpy(unittest.TestCase):
             sorted(self.seq, reverse=True)[:2]
         )
 
+    def test_one_top(self):
+        lst = _(self.seq)
+        self.assertEqual(
+            lst.top()._[0],
+            max(self.seq)
+        )
+
 
     def test_over_top(self):
         lst = _(self.seq)
@@ -158,76 +153,39 @@ class test_itpy(unittest.TestCase):
             sorted(self.seq, reverse=True)
         )
 
-    def test_count(self):
+    def test_sample_without_replacement(self):
         lst = _(self.seq)
         self.assertEqual(
-            lst.count(),
-            len(self.seq)
-        )
-
-    def test_cache(self):
-        lst = _(self.seq)
-        lsb = lst.cache()
-
-        self.assertNotEqual(
-            lst, lsb
-        )
-        self.assertEqual(
-            lst.map(self.mapf).filter(self.filterf)._,
-            lsb.map(self.mapf).filter(self.filterf)._
-        )
-        self.assertNotEqual(
-            lst.map(self.mapf).filter(self.filterf),
-            lsb.map(self.mapf).filter(self.filterf)
+            lst.sample_without_replacement(4).size(),
+            4
         )
 
     def test_distinct(self):
-        lst = _(self.seq * 7)
-        self.assertEqual(
-            lst.count(),
-            7 * 10,
-        )
+        lst = _(self.seq*2)
         self.assertEqual(
             lst.distinct()._,
-            self.seq,
+            list(set(self.seq))
         )
 
-    def test_distinct_approx(self):
-        lst = _(self.seq * 7)
+    def test_reduce(self):
+        lst = _(self.seq)
         self.assertEqual(
-            lst.count(),
-            7 * 10,
-        )
-        self.assertEqual(
-            lst.distinct_approx()._,
-            self.seq,
+            lst.reduce(self.sumf),
+            reduce(self.sumf, self.seq)
         )
 
-    def test_small_sampling(self):
-        lst = _(xrange(1000))
+    def test_reduceby(self):
+        lst = _([(1,1), (1,1), (1,1), (2,1)])
         self.assertEqual(
-            lst.sample_without_replacement(10).count(),
-            10,
+            lst.reduceby(self.sumf)._,
+            [(1, 3), (2,1)]
         )
 
-    def test_equal_sampling(self):
-        lst = _(xrange(100))
+    def test_size(self):
+        lst = _(self.seq)
         self.assertEqual(
-            lst.sample_without_replacement(100).count(),
-            100,
-        )
-        self.assertEqual(
-            lst.sample_without_replacement(100).distinct().count(),
-            100,
-        )
-
-    def test_over_sampling(self):
-        lst = _(xrange(100))
-        self.assertEqual(
-            lst.sample_without_replacement(1000).count(),
-            100,
+            lst.size(),
+            len(self.seq)
         )
 
 
-if __name__ == '__main__':
-    unittest.main()
