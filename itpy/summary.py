@@ -19,10 +19,8 @@ def reduce_(iterable, reducer):
     :param iterable:
     :param reducer:
     """
-    value = iterable.next()
 
-    for rest in iterable:
-        value = reducer(value, rest)
+    value = reduce(reducer, iterable)
 
     return value
 
@@ -41,16 +39,6 @@ def frequency(iterable):
     return freq
 
 
-def size(iterable):
-    """
-    Obtain the size of the iterable
-
-    :param iterable:
-    """
-    length = len(iterable)
-    return length
-
-
 def mean(iterable):
     """
     Computes the mean with a single pass of the iterable.
@@ -65,7 +53,7 @@ def mean(iterable):
         size_accumilator += 1
 
     # Practice safe division.
-    if (size_accumilator < 2):
+    if size_accumilator < 2:
         return 0
 
     ret_result = sum_of_values / size_accumilator

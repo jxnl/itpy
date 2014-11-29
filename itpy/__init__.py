@@ -29,12 +29,9 @@ class Itpy(object):
     def __init__(self, iterable=None):
         self._iter = iterable
 
+    @property
     def _(self):
         return list(self)
-
-    @iter_wraps(summary.size)
-    def size(self):
-        return Itpy.VALUE
 
     @iter_wraps(transforms.map_)
     def map(self, function):
@@ -99,11 +96,6 @@ class Itpy(object):
     @term_wraps(summary.reduce_)
     def reduce(self, reducer):
         return Itpy.VALUE
-
-    @term_wraps(summary.size)
-    def __len__(self):
-        return Itpy.VALUE
-
 
     def __iter__(self):
         for item in self._iter:

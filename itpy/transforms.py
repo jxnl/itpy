@@ -16,7 +16,6 @@ from lambdas import identity, keyf, valuef
 import itertools as it
 
 
-
 def map_(iterable, function):
     """
     Make an iterator that computes the function using arguments
@@ -174,8 +173,8 @@ def take(iterable, max):
     :param iterable:
     :param max:
     """
-    def taking(iterable):
-        for i, e in enumerate(iterable):
+    def taking(iterable_):
+        for i, e in enumerate(iterable_):
             if i < max:
                 yield e
 
@@ -192,7 +191,7 @@ def sort(iterable, cmp=None, key=None, reverse=False):
     :param key:
     :param reverse:
     """
-    sorted_iterable = sorted(iterable._iter, cmp=cmp, key=key, reverse=reverse)
+    sorted_iterable = sorted(iterable, cmp=cmp, key=key, reverse=reverse)
 
     return iter(sorted_iterable)
 
@@ -224,7 +223,6 @@ def top(iterable, max_size=1, key=None):
             heapreplace(top_k_values, item)
 
     return iter(sorted(top_k_values, key=key, reverse=True))
-
 
 
 def sample_without_replacement(iterable, max_size):

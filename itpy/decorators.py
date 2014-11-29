@@ -32,8 +32,9 @@ class iter_wraps(object):
 
         @wraps(f)
         def wrapped(*args, **kwargs):
-            iter = f()
+            iter = f(*args, **kwargs)
             iter._iter = self.transform(*args, **kwargs)
+            return iter
 
         return wrapped
 

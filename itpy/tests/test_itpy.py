@@ -68,16 +68,6 @@ class test_itpy(unittest.TestCase):
              (1, [1, 3, 5, 7, 9])]
         )
 
-    def test_reduce_pair_by_key(self):
-        lst = _([(0, 0), (0, 2), (0, 4), (0, 6), (0, 8),
-                 (1, 1), (1, 3), (1, 5), (1, 7), (1, 9)])
-
-        self.assertEqual(
-            lst.reduce_pair_by_key(self.sumf)._,
-            [(0, sum([0, 2, 4, 6, 8])),
-             (1, sum([1, 3, 5, 7, 9]))]
-        )
-
     def test_flat_reduce(self):
         lst = _(self.seq)
         self.assertEqual(
