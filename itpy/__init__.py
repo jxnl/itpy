@@ -16,7 +16,6 @@ from threading import Lock
 
 from itpy.decorators import iter_wraps, term_wraps
 from itpy.lambdas import keyf, valuef, identity
-
 import itpy.transforms as transforms
 import itpy.summary as summary
 import itpy.sketch as sketch
@@ -26,9 +25,10 @@ import itpy.iio as iio
 class Itpy(object):
     VALUE = None
 
+    lock = Lock()
+
     def __init__(self, iterable=None):
         self._iter = iterable
-        self.lock = Lock()
 
     """
     Transformations
@@ -37,7 +37,6 @@ class Itpy(object):
     These methods provide you with the power to transforms your Itpy datastreams into other data streams through
     chaining methods together.
     """
-
 
     @iter_wraps(transforms.map)
     def map(self, function):
@@ -181,11 +180,9 @@ class Itpy(object):
     def to_bloomfilter(self, init_cap=200, err_rate=0.001):
         return Itpy.VALUE
 
+
     @property
-    def _(self):
-        """
-        This collects all of the elements of the iter into a list `
-        """
+    def _(self): # Collect the elements of the iter into a list
         return list(self)
 
     def __iter__(self):
@@ -193,5 +190,5 @@ class Itpy(object):
             yield item
 
     def next(self):
-        with self.lock:
+        with Itpy.lock:
             return self._iter.next()
