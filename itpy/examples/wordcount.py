@@ -1,4 +1,19 @@
 # -*- coding: utf-8 -*-
+"""
+itpy.examples.wordcount
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This is an example of a wordcount program that reads in a text file.
+
+1) flatmap a split
+2) map a strip
+3) reduceby actually does both map and reduce...
+    map to (k, 1)
+    reduce 1s to count
+4) sort on value
+5) push to stdout
+
+"""
 
 from __future__ import print_function
 
