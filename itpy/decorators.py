@@ -11,6 +11,7 @@ that the computational. It is up to the programmer to make sure that the signitu
 from functools import wraps
 
 
+# noinspection PyPep8Naming
 class iter_wraps(object):
     """
     This decorator will highjack any function that returns an Iter() and populates it's insides with the resulting
@@ -25,20 +26,22 @@ class iter_wraps(object):
     def __init__(self, transformation):
         self.transform = transformation
 
-    def __call__(self, f):
+    def __call__(self, victim):
+
+        @wraps(victim)
+        def wrapped(*args, **kwargs):
+            it = victim(*args, **kwargs)
+            it._iter = self.transform(*args, **kwargs)
+            return it
 
         if self.transform.__doc__:
-            f.__doc__ == self.transform.__doc__
-
-        @wraps(f)
-        def wrapped(*args, **kwargs):
-            iter = f(*args, **kwargs)
-            iter._iter = self.transform(*args, **kwargs)
-            return iter
+            wrapped.__name__ = self.transform.__name__
+            wrapped.__doc__ = self.transform.__doc__
 
         return wrapped
 
 
+# noinspection PyPep8Naming
 class term_wraps(object):
     """
     This decorator will highjack any function that does not return an Iter() and populates it with the resulting
@@ -53,13 +56,14 @@ class term_wraps(object):
     def __init__(self, transformation):
         self.transform = transformation
 
-    def __call__(self, f):
+    def __call__(self, victim):
 
-        if self.transform.__doc__:
-            f.__doc__ == self.transform.__doc__
-
-        @wraps(f)
+        @wraps(victim)
         def wrapped(*args, **kwargs):
             return self.transform(*args, **kwargs)
+
+        if self.transform.__doc__:
+            wrapped.__name__ = self.transform.__name__
+            wrapped.__doc__ = self.transform.__doc__
 
         return wrapped

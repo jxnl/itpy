@@ -37,7 +37,7 @@ class Itpy(object):
     def from_stdin(self):
         return Itpy()
 
-    @iter_wraps(transforms.map_)
+    @iter_wraps(transforms.map)
     def map(self, function):
         return Itpy()
 
@@ -45,7 +45,7 @@ class Itpy(object):
     def flatmap(self, function_to_list):
         return Itpy()
 
-    @iter_wraps(transforms.filter_)
+    @iter_wraps(transforms.filter)
     def filter(self, predicate):
         return Itpy()
 
@@ -85,7 +85,7 @@ class Itpy(object):
     def take(self, max):
         return Itpy()
 
-    @iter_wraps(transforms.slice_)
+    @iter_wraps(transforms.slice)
     def slice(self, *args):
         return Itpy()
 
@@ -97,11 +97,7 @@ class Itpy(object):
     def distinct(self):
         return Itpy()
 
-    @term_wraps(summary.size)
-    def size(self):
-        return Itpy.VALUE
-
-    @term_wraps(summary.reduce_)
+    @term_wraps(summary.reduce)
     def reduce(self, reducer):
         return Itpy.VALUE
 
