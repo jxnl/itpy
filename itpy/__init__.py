@@ -104,6 +104,18 @@ class Itpy(object):
     def intercept(self, function):
         return Itpy()
 
+    @term_wraps(summary.frequency)
+    def frequency(self):
+        return Itpy.VALUE
+
+    @term_wraps(summary.mean)
+    def mean(self):
+        return Itpy.VALUE
+
+    @term_wraps(summary.online_variance)
+    def variance(self):
+        return Itpy.VALUE
+
     @term_wraps(summary.for_each)
     def for_each(self, function):
         return Itpy.VALUE

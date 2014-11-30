@@ -52,7 +52,9 @@ def reduce(iterable, reducer):
 
 def frequency(iterable):
     """
-    Obtain the frequency of every item in the
+    Obtain the frequency of every item in the iterable.
+    It is important to note that it is currently implemented as a counter
+    so we must assume this counter fits into memory.
 
     :rtype : Counter
     :param iterable:

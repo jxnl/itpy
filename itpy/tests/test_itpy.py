@@ -8,6 +8,7 @@ These are some tests... Nothing to see here unless you also want to take a look 
 For these tests you will notice that ._ is being called. this results in the termination of a series of transformations
 
 """
+from __future__ import division
 
 import unittest
 
@@ -189,4 +190,14 @@ class test_itpy(unittest.TestCase):
             len(self.seq)
         )
 
+    def test_mean(self):
+        lst = _(self.seq)
+        mean = sum(self.seq)/len(self.seq)
+        self.assertAlmostEqual(lst.mean(), mean)
+
+    def test_var(self):
+        lst = _(self.seq)
+        mean = sum(self.seq)/len(self.seq)
+        self.assertAlmostEqual(lst.variance(),
+            sum((x-mean)**2 for x in self.seq)/(len(self.seq)-1))
 
