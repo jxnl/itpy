@@ -155,10 +155,10 @@ class test_itpy(unittest.TestCase):
             sorted(self.seq, reverse=True)
         )
 
-    def test_sample_without_replacement(self):
+    def test_sample(self):
         lst = _(self.seq)
         self.assertEqual(
-            lst.sample_without_replacement(4).size(),
+            lst.sample(4).size(),
             4
         )
 

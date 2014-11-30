@@ -90,8 +90,8 @@ class Itpy(object):
     def slice(self, *args):
         return Itpy()
 
-    @iter_wraps(transforms.sample_without_replacement)
-    def sample_without_replacement(self, max_size):
+    @iter_wraps(transforms.sample)
+    def sample(self, max_size):
         return Itpy()
 
     @iter_wraps(transforms.distinct)

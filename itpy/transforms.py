@@ -232,7 +232,7 @@ def top(iterable, max_size=1, key=None):
     return iter(sorted(top_k_values, key=key, reverse=True))
 
 
-def sample_without_replacement(iterable, max_size):
+def sample(iterable, max_size):
     """
     Make an iterator of `max_size` of randomly sampled elements from the original
 
