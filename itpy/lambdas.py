@@ -42,3 +42,16 @@ def keyf(x):
 def valuef(x):
     assert len(x) == 2
     return x[1]
+
+def str_split(sep=None):
+    if not sep:
+        sep = " "
+    def spliter(string):
+        return str(string).split(sep)
+    return spliter
+
+def str_strip(s):
+    return s.strip()
+
+def pair_to_str(p):
+    return "{},{}".format(p[0], p[1])

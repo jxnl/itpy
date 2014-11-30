@@ -11,6 +11,18 @@ from __future__ import division
 from collections import Counter
 from functools import reduce as rd
 
+def for_each(iterable, function):
+    """
+    Evaluate the function for every value of the iterable. This is used inplace of map when we do not care about keeping
+    the results. Unlike transform.intercept, this returns nothing.
+
+    :param iterable:
+    :param function:
+    """
+    for item in iterable:
+        function(item)
+    return None
+
 def size(iterable):
     """
     Obtain the size of the iterable

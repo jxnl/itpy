@@ -15,6 +15,7 @@ from __future__ import print_function
 from decorators import iter_wraps, term_wraps
 from lambdas import keyf, valuef, identity
 
+from threading import Lock
 import transforms
 import summary
 import sketch
@@ -26,16 +27,18 @@ class Itpy(object):
 
     def __init__(self, iterable=None):
         self._iter = iterable
+        self.lock = Lock()
 
-    @classmethod
+    @staticmethod
     @iter_wraps(iio.from_file)
-    def from_file(cls, path_to_file, buffered=True):
+    def from_file(path_to_file, buffer=1):
         return Itpy()
 
-    @classmethod
+    @staticmethod
     @iter_wraps(iio.from_stdin)
     def from_stdin(self):
         return Itpy()
+
 
     @iter_wraps(transforms.map)
     def map(self, function):
@@ -97,8 +100,28 @@ class Itpy(object):
     def distinct(self):
         return Itpy()
 
+    @iter_wraps(transforms.intercept)
+    def intercept(self, function):
+        return Itpy()
+
+    @term_wraps(summary.for_each)
+    def for_each(self, function):
+        return Itpy.VALUE
+
     @term_wraps(summary.reduce)
     def reduce(self, reducer):
+        return Itpy.VALUE
+
+    @term_wraps(summary.size)
+    def size(self):
+        return Itpy.VALUE
+
+    @term_wraps(iio.to_stdout)
+    def to_stdout(self):
+        return Itpy.VALUE
+
+    @term_wraps(iio.to_file)
+    def to_file(self, path_to_file):
         return Itpy.VALUE
 
     @property
@@ -108,3 +131,8 @@ class Itpy(object):
     def __iter__(self):
         for item in self._iter:
             yield item
+
+
+    def next(self):
+        with self.lock:
+            return self._iter.next()
