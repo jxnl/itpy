@@ -12,14 +12,15 @@ large ammounts of data!
 """
 from __future__ import print_function
 
-from decorators import iter_wraps, term_wraps
-from lambdas import keyf, valuef, identity
-
 from threading import Lock
-import transforms
-import summary
-import sketch
-import iio
+
+from itpy.decorators import iter_wraps, term_wraps
+from itpy.lambdas import keyf, valuef, identity
+
+import itpy.transforms as transforms
+import itpy.summary as summary
+import itpy.sketch as sketch
+import itpy.iio as iio
 
 
 class Itpy(object):
@@ -29,15 +30,13 @@ class Itpy(object):
         self._iter = iterable
         self.lock = Lock()
 
-    @staticmethod
-    @iter_wraps(iio.from_file)
-    def from_file(path_to_file, buffer=1):
-        return Itpy()
+    """
+    Transformations
+    ~~~~~~~~~~~~~~~
 
-    @staticmethod
-    @iter_wraps(iio.from_stdin)
-    def from_stdin(self):
-        return Itpy()
+    These methods provide you with the power to transforms your Itpy datastreams into other data streams through
+    chaining methods together.
+    """
 
 
     @iter_wraps(transforms.map)
@@ -104,6 +103,13 @@ class Itpy(object):
     def intercept(self, function):
         return Itpy()
 
+    """
+    Stream Summaries
+    ~~~~~~~~~~~~~~~~
+
+    These methods provides you the ability to calculate various features of the data stream.
+    """
+
     @term_wraps(summary.frequency)
     def frequency(self):
         return Itpy.VALUE
@@ -128,6 +134,24 @@ class Itpy(object):
     def size(self):
         return Itpy.VALUE
 
+    """
+    Iterables & I/O
+    ~~~~~~~~~~~~~~~
+
+    These methods provide basic file I/O for reading and writing to files and from stdin and stdout.
+    It is imporant to note that if a file already exists it will truncate it first.
+    """
+
+    @staticmethod
+    @iter_wraps(iio.from_file)
+    def from_file(path_to_file, buffer=1):
+        return Itpy()
+
+    @staticmethod
+    @iter_wraps(iio.from_stdin)
+    def from_stdin(self):
+        return Itpy()
+
     @term_wraps(iio.to_stdout)
     def to_stdout(self):
         return Itpy.VALUE
@@ -136,14 +160,37 @@ class Itpy(object):
     def to_file(self, path_to_file):
         return Itpy.VALUE
 
+    """
+    Sketching methods
+    ~~~~~~~~~~~~~~~~~
+
+    These algorithms have limited memory available to them (much less than the input size) and also limited
+    processing time per item. These constraints may mean that an algorithm produces an approximate answer
+    based on a summary or "sketch" of the data stream in memory.
+    """
+
+    @term_wraps(sketch.count_distinct_approx)
+    def count_distinct_approx(self, init_cap=200, err_rate=0.001):
+        return Itpy.VALUE
+
+    @term_wraps(sketch.frequency_approx)
+    def frequency_approx(self, table_width=1000, n_hash=10):
+        return Itpy.VALUE
+
+    @term_wraps(sketch.to_bloomfilter)
+    def to_bloomfilter(self, init_cap=200, err_rate=0.001):
+        return Itpy.VALUE
+
     @property
     def _(self):
+        """
+        This collects all of the elements of the iter into a list `
+        """
         return list(self)
 
     def __iter__(self):
         for item in self._iter:
             yield item
-
 
     def next(self):
         with self.lock:
