@@ -18,6 +18,7 @@ from lambdas import keyf, valuef, identity
 import transforms
 import summary
 import sketch
+import iio
 
 
 class Itpy(object):
@@ -26,9 +27,15 @@ class Itpy(object):
     def __init__(self, iterable=None):
         self._iter = iterable
 
-    @property
-    def _(self):
-        return list(self)
+    @classmethod
+    @iter_wraps(iio.from_file)
+    def from_file(cls, path_to_file, buffered=True):
+        return Itpy()
+
+    @classmethod
+    @iter_wraps(iio.from_stdin)
+    def from_stdin(self):
+        return Itpy()
 
     @iter_wraps(transforms.map_)
     def map(self, function):
@@ -46,20 +53,16 @@ class Itpy(object):
     def filterfalse(self, predicate):
         return Itpy()
 
+    @iter_wraps(transforms.sort)
+    def sort(self, cmp=None, key=None, reverse=False):
+        return Itpy()
+
     @iter_wraps(transforms.reduceby)
     def reduceby(self, reducer, key=keyf, value=valuef):
         return Itpy()
 
     @iter_wraps(transforms.groupby)
     def groupby(self, key=identity, value=identity):
-        return Itpy()
-
-    @iter_wraps(transforms.takewhile)
-    def takewhile(self, predicate):
-        return Itpy()
-
-    @iter_wraps(transforms.dropwhile)
-    def dropwhile(self, predicate):
         return Itpy()
 
     @iter_wraps(transforms.union)
@@ -70,12 +73,16 @@ class Itpy(object):
     def top(self, max_size=1, key=None):
         return Itpy()
 
-    @iter_wraps(transforms.take)
-    def take(self, max):
+    @iter_wraps(transforms.takewhile)
+    def takewhile(self, predicate):
         return Itpy()
 
-    @iter_wraps(transforms.sort)
-    def sort(self, cmp=None, key=None, reverse=False):
+    @iter_wraps(transforms.dropwhile)
+    def dropwhile(self, predicate):
+        return Itpy()
+
+    @iter_wraps(transforms.take)
+    def take(self, max):
         return Itpy()
 
     @iter_wraps(transforms.slice_)
@@ -90,13 +97,17 @@ class Itpy(object):
     def distinct(self):
         return Itpy()
 
+    @term_wraps(summary.size)
+    def size(self):
+        return Itpy.VALUE
+
     @term_wraps(summary.reduce_)
     def reduce(self, reducer):
         return Itpy.VALUE
 
-    @term_wraps(summary.size)
-    def size(self):
-        return Itpy.VALUE
+    @property
+    def _(self):
+        return list(self)
 
     def __iter__(self):
         for item in self._iter:

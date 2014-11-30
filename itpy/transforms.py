@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-itpy.transformation
-~~~~~~~~~~~~~~~~~~~
+itpy.transforms
+~~~~~~~~~~~~~~~
 
 This module contains the all the closed transformations on iterables.
 All functions must consume iterables as it's first argument and return
@@ -40,7 +40,7 @@ def flatmap(iterable, function_to_list):
 
 def filter_(iterable, predicate):
     """
-    Make an iterator that filters elements from iterable returning only those 
+    Make an iterator that filters elements from iterable returning only those
     for which the predicate is True
     If predicate is None, return the items that are true.
 
@@ -52,7 +52,7 @@ def filter_(iterable, predicate):
 
 def filterfalse(iterable, predicate):
     """
-    Make an iterator that filters elements from iterable returning only those 
+    Make an iterator that filters elements from iterable returning only those
     for which the predicate is False.
     If predicate is None, return the items that are false
 
@@ -64,7 +64,7 @@ def filterfalse(iterable, predicate):
 
 def takewhile(iterable, predicate):
     """
-    Make an iterator that returns elements from the iterable as long as the 
+    Make an iterator that returns elements from the iterable as long as the
     predicate is true.
 
     :param iterable:
@@ -78,7 +78,7 @@ def dropwhile(iterable, predicate):
     Make an iterator that drops elements from the iterable as long as the
     predicate is true
 
-    Note, the iterator does not produce any output until the predicate 
+    Note, the iterator does not produce any output until the predicate
     first becomes false, so it may have a lengthy start-up time.
 
     :param iterable:
@@ -111,8 +111,8 @@ def groupby(iterable, key=identity, value=identity):
 
 def reduceby(iterable, reducer, key=keyf, value=valuef):
     """
-    Make an iterator that returns the merged values for each key using an 
-    associative reduce function.The values contained in this iterable must be 
+    Make an iterator that returns the merged values for each key using an
+    associative reduce function.The values contained in this iterable must be
     2-tuples in the form (k, v).
 
     :param iterable:
@@ -152,12 +152,12 @@ def union(iterable, *iterables):
 def slice_(iterable, *args):
     """
     Make an iterator that returns selected elements from the iterable.
-    If start is non-zero, then elements from the iterable are skipped 
-    until start is reached. Afterward, elements are returned consecutively 
+    If start is non-zero, then elements from the iterable are skipped
+    until start is reached. Afterward, elements are returned consecutively
     unless step is set higher than one which results in items being skipped.
 
     If stop is None, then iteration continues until the iterator is exhausted;
-    otherwise, it stops at the specified position. Unlike regular slicing, 
+    otherwise, it stops at the specified position. Unlike regular slicing,
     slice() does not support negative values for start, stop, or step.
 
     :param iterable:
@@ -238,7 +238,7 @@ def sample_without_replacement(iterable, max_size):
         if len(reservoir) < max_size:
             reservoir.append(item)
         elif switch < max_size:
-            reservoir[switch] = item
+           reservoir[switch] = item
 
     return iter(reservoir)
 
