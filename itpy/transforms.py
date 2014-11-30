@@ -268,3 +268,17 @@ def distinct(iterable):
                 yield i
 
     return distincting(iterable)
+
+def intercept(iterable, function):
+    """
+    Make an iterable from the original one but intercept the value and evaluate the function for the value.
+    This may be valuable for logging and debuging.
+
+    :param iterable:
+    :param function:
+    """
+    def intercepting(iterable_):
+        for i in iterable_:
+            function(i)
+            yield i
+    return intercepting(iterable)
