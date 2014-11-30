@@ -15,6 +15,7 @@ from __future__ import print_function
 from decorators import iter_wraps, term_wraps
 from lambdas import keyf, valuef, identity
 
+from threading import Lock
 import transforms
 import summary
 import sketch
@@ -26,6 +27,7 @@ class Itpy(object):
 
     def __init__(self, iterable=None):
         self._iter = iterable
+        self.lock = Lock()
 
     @classmethod
     @iter_wraps(iio.from_file)
@@ -36,6 +38,14 @@ class Itpy(object):
     @iter_wraps(iio.from_stdin)
     def from_stdin(self):
         return Itpy()
+
+    @term_wraps(iio.to_stdout)
+    def to_stdout(self):
+        return Itpy.VALUE
+
+    @term_wraps(iio.to_file)
+    def to_file(self, path_to_file):
+        return Itpy.VALUE
 
     @iter_wraps(transforms.map)
     def map(self, function):
@@ -101,6 +111,10 @@ class Itpy(object):
     def reduce(self, reducer):
         return Itpy.VALUE
 
+    @term_wraps(summary.size)
+    def size(self):
+        return Itpy.VALUE
+
     @property
     def _(self):
         return list(self)
@@ -108,3 +122,7 @@ class Itpy(object):
     def __iter__(self):
         for item in self._iter:
             yield item
+
+    def next(self):
+        with self.lock:
+            return self._iter.next()

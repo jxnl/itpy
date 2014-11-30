@@ -25,7 +25,8 @@ def map(iterable, function):
     :param iterable:
     :param function:
     """
-    return iter(it.imap(function, iterable))
+    for x in iterable:
+        yield function(x)
 
 
 def flatmap(iterable, function_to_list):
@@ -36,7 +37,13 @@ def flatmap(iterable, function_to_list):
     :param iterable:
     :param function_to_list:
     """
-    return iter(it.chain(*map(iterable, function_to_list)))
+
+    itera = iter(iterable)
+
+    while True:
+        list_block = function_to_list(itera.next())
+        for result_value in list_block:
+            yield result_value
 
 
 # noinspection PyShadowingBuiltins
