@@ -14,7 +14,9 @@ from pybloom import ScalableBloomFilter
 
 def count_distinct_approx(iterable, init_cap=200, err_rate=0.001):
     """
-    Count the number of distinct elements from an iterable. This implementation uses a bloomfilter to approximate
+    Count the number of distinct elements from an iterable.
+
+    This implementation uses a bloomfilter to approximate
     the number of distinct values found in this iterable.
     
     :param iterable:
@@ -22,16 +24,17 @@ def count_distinct_approx(iterable, init_cap=200, err_rate=0.001):
     :param err_rate:
     """
 
-    counter = 0
+    count_of_distinct_values = 0
 
-    set_of_distinct_values = ScalableBloomFilter(init_cap, err_rate)
+    # This bloomfilter acts as a set that tests if we've counted this element before.
+    scalableBloomFilter = ScalableBloomFilter(init_cap, err_rate)
 
     for element in iterable:
-        if element not in set_of_distinct_values:
-            set_of_distinct_values.add(element)
-            counter += 1
+        if element not in scalableBloomFilter:
+            scalableBloomFilter.add(element)
+            count_of_distinct_values += 1
 
-    return counter
+    return count_of_distinct_values
 
 
 def frequency_approx(iterable, table_width=1000, n_hashs=10):
@@ -58,8 +61,8 @@ def to_bloomfilter(iterable, init_cap=200, err_rate=0.001):
     :param err_rate:
     """
 
-    bloom = ScalableBloomFilter(init_cap, err_rate)
+    scalableBloomFilter = ScalableBloomFilter(init_cap, err_rate)
     for element in iterable:
-        bloom.add(element)
+        scalableBloomFilter.add(element)
 
-    return bloom
+    return scalableBloomFilter
