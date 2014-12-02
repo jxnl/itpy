@@ -34,7 +34,6 @@ def which_centroid(centroids):
 
     :param centroids:
     """
-
     def classifer(point):
         for clazz, centroid in enumerate(centroids):
             cur_dist = dist(centroid, point)
@@ -71,12 +70,13 @@ current_centroids = [
 
 # Iterate and redefine the centroids
 for _ in range(10):
-    current_centroids = Itpy.from_file(fn) \
-        .map(str_strip) \
-        .map(str_split(",")) \
-        .map(lambda (x, y): (float(x), float(y))) \
-        .groupby(key=which_centroid(current_centroids)) \
-        .map(lambda (clazz, points): centroid_of(points))._
+    current_centroids = Itpy.from_file(fn)\
+        .map(str_strip)\
+        .map(str_split(","))\
+        .map(lambda (x, y): (float(x), float(y)))\
+        .groupby(key=which_centroid(current_centroids))\
+        .map(lambda (clazz, points): centroid_of(points))\
+        ._
 
 print(current_centroids)
 

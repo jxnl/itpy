@@ -94,6 +94,10 @@ class Itpy(object):
     def sample(self, max_size):
         return Itpy()
 
+    @iter_wraps(transforms.batch)
+    def batch(self, size):
+        return Itpy()
+
     @iter_wraps(transforms.distinct)
     def distinct(self):
         return Itpy()
@@ -180,10 +184,25 @@ class Itpy(object):
     def to_bloomfilter(self, init_cap=200, err_rate=0.001):
         return Itpy.VALUE
 
+    """
+    Don't worry about these
+    ~~~~~~~~~~~~~~~~~~~~~~~
+
+    These contains magic methods that will allow you to do interesting things with the python syntax.
+    """
 
     @property
     def _(self): # Collect the elements of the iter into a list
         return list(self)
+
+    def __radd__(self, other):
+        """
+        Allows + operator to act as union
+
+        :param other:
+        """
+        if other.__iter__:
+            return self.union(iter(other))
 
     def __iter__(self):
         for item in self._iter:

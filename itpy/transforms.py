@@ -282,3 +282,21 @@ def intercept(iterable, function):
             function(i)
             yield i
     return intercepting(iterable)
+
+def batch(iterable, size):
+    """
+    Return an iterable of values batched from the iterable with constant size.
+
+    :param iterable:
+    :param size:
+    """
+    batch_window = [None for _ in range(size)]
+    cur_size = 0
+    for item in iterable:
+        batch_window[cur_size] = item
+        cur_size += 1
+        if cur_size >= size:
+            batched = batch_window[:]
+            batch_window = [None for _ in range(size)]
+            cur_size = 0
+            yield batched
