@@ -278,9 +278,9 @@ def intercept(iterable, function):
     :param function:
     """
     def intercepting(iterable_):
-        for i in iterable_:
-            function(i)
-            yield i
+        for item in iterable_:
+            function(item)
+            yield item
     return intercepting(iterable)
 
 def batch(iterable, size):

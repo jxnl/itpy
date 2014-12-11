@@ -14,7 +14,8 @@ def from_file(path_to_file, buffer=1):
     The optional buffering argument specifies the file’s desired buffer size: 0 means unbuffered,  1 means line
     buffered, any other positive value means use a buffer of (approximately) that size (in bytes).
 
-    The default is line buffered.
+    :param path_to_file:
+    :param buffer:
     """
     with open(path_to_file, buffering=buffer) as buffered_file:
         for line in buffered_file:
@@ -31,7 +32,7 @@ def from_stdin():
         yield line
 
 
-def to_file(iterable, path_to_file, mode="w"):
+def to_file(iterable, path_to_file, mode="w+"):
     """
     Write iterable to file.
 
@@ -39,7 +40,7 @@ def to_file(iterable, path_to_file, mode="w"):
     :param path_to_file:
     :param mode:
     """
-    with open(path_to_file, 'w+') as target:
+    with open(path_to_file, mode) as target:
         for line in iterable:
             target.write(str(line) + "\n")
 
