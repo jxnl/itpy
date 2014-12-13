@@ -32,6 +32,7 @@ class iter_wraps(object):
         def wrapped(*args, **kwargs):
             it = victim(*args, **kwargs)
             it._iter = self.transform(*args, **kwargs)
+            it._stack.append(self.transform.__name__)
             return it
 
         if self.transform.__doc__:

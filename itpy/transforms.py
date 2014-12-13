@@ -200,6 +200,9 @@ def sort(iterable, cmp=None, key=None, reverse=False):
     :param cmp:
     :param key:
     :param reverse:
+
+    TODO: Make lazy
+
     """
     sorted_iterable = sorted(iterable, cmp=cmp, key=key, reverse=reverse)
 

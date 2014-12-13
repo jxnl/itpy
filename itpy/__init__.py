@@ -25,11 +25,15 @@ import itpy.iio as iio
 class Itpy(object):
     VALUE = None
 
-    lock = Lock()
-
-    def __init__(self, iterable=None):
-        self._iter = iterable
-
+    def __init__(self, iterable=None, itpy=None):
+        if iterable:
+            self._iter = iter(iterable)
+            self._src = type(iterable)
+        if itpy:
+            self._stack = itpy._stack
+            self._src = itpy._src
+        else:
+            self._stack = []
     """
     Transformations
     ~~~~~~~~~~~~~~~
@@ -40,71 +44,71 @@ class Itpy(object):
 
     @iter_wraps(transforms.map)
     def map(self, function):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.flatmap)
     def flatmap(self, function_to_list):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.filter)
     def filter(self, predicate):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.filterfalse)
     def filterfalse(self, predicate):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.sort)
     def sort(self, cmp=None, key=None, reverse=False):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.reduceby)
     def reduceby(self, reducer, key=keyf, value=valuef):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.groupby)
     def groupby(self, key=identity, value=identity):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.union)
     def union(self, *iterable):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.top)
     def top(self, max_size=1, key=None):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.takewhile)
     def takewhile(self, predicate):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.dropwhile)
     def dropwhile(self, predicate):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.take)
     def take(self, max):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.slice)
     def slice(self, *args):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.sample)
     def sample(self, max_size):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.batch)
     def batch(self, size):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.distinct)
     def distinct(self):
-        return Itpy()
+        return Itpy(itpy=self)
 
     @iter_wraps(transforms.intercept)
     def intercept(self, function):
-        return Itpy()
+        return Itpy(itpy=self)
 
     """
     Stream Summaries
@@ -194,12 +198,10 @@ class Itpy(object):
     def _(self): # Collect the elements of the iter into a list
         return list(self)
 
-    def __radd__(self, other):
-        """
-        Allows + operator to act as union
+    def __repr__(self):
+        return "Itpy({}).{}".format(self._src, ".".join(self._stack))
 
-        :param other:
-        """
+    def __radd__(self, other):
         if other.__iter__:
             return self.union(iter(other))
 
@@ -208,5 +210,4 @@ class Itpy(object):
             yield item
 
     def next(self):
-        with Itpy.lock:
-            return self._iter.next()
+        return self._iter.next()
