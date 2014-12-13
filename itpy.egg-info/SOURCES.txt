@@ -1,6 +1,12 @@
 setup.cfg
 setup.py
 itpy/__init__.py
+itpy/decorators.py
+itpy/iio.py
+itpy/lambdas.py
+itpy/sketch.py
+itpy/summary.py
+itpy/transforms.py
 itpy.egg-info/PKG-INFO
 itpy.egg-info/SOURCES.txt
 itpy.egg-info/dependency_links.txt

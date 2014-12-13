@@ -44,7 +44,7 @@ class iter_wraps(object):
 # noinspection PyPep8Naming
 class term_wraps(object):
     """
-    This decorator will highjack any function that does not return an Iter() and populates it with the resulting
+    This decorator will high-jack any function that does not return an Iter() and populates it with the resulting
     valued defined by as the argument of the decorator's constructor.
 
     @term_wraps(itpy.transform.collect)

@@ -170,14 +170,13 @@ class Itpy(object):
     These algorithms have limited memory available to them (much less than the input size) and also limited
     processing time per item. These constraints may mean that an algorithm produces an approximate answer
     based on a summary or "sketch" of the data stream in memory.
+
+    TODO : HyperLogLog, Count-min
+
     """
 
     @term_wraps(sketch.count_distinct_approx)
     def count_distinct_approx(self, init_cap=200, err_rate=0.001):
-        return Itpy.VALUE
-
-    @term_wraps(sketch.frequency_approx)
-    def frequency_approx(self, table_width=1000, n_hash=10):
         return Itpy.VALUE
 
     @term_wraps(sketch.to_bloomfilter)
