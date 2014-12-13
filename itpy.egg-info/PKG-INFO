@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: itpy
-Version: 0.1dev
+Version: 0.2dev
 Summary: A wrapper for iterators to allow for expressive chained transformations
 Home-page: https://github.com/jxnl/itpy
 Author: Jason Liu
