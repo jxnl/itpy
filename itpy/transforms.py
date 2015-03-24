@@ -124,7 +124,9 @@ def find(iterable, predicate):
     :param iterable:
     :param predicate:
     """
-    pass
+    for element in iterable:
+        if predicate(element):
+            return element
 
 
 def flatmap(iterable, function_to_list):
@@ -144,17 +146,18 @@ def flatmap(iterable, function_to_list):
             yield result_value
 
 
-# TODO
 def flatten(iterable):
     """
     Make an iterator from a iterable of iterables
 
     :param iterable:
     """
-    pass
+    for iterable_ in iterable:
+        for element in iterable_:
+            yield element
 
 
-# TODO
+
 def fold(iterable, func):
     """
     Folds the elements of this iterable using an associative binary operator
@@ -165,7 +168,6 @@ def fold(iterable, func):
     pass
 
 
-# TODO
 def forall(iterable, predicate):
     """
     Test if predicate holds for all elements in iterator
@@ -174,8 +176,10 @@ def forall(iterable, predicate):
     :param predicate:
     :return:
     """
-    pass
-
+    for element in iterable:
+        if not predicate(element):
+            return False
+    return True
 
 def groupby(iterable, key=identity):
     """
