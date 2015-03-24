@@ -9,45 +9,6 @@ This module contains functions that compute summaries over the iterable.
 """
 from __future__ import division
 from collections import Counter
-from functools import reduce as rd
-
-def for_each(iterable, function):
-    """
-    Evaluate the function for every value of the iterable. This is used inplace of map when we do not care about keeping
-    the results. Unlike transform.intercept, this returns nothing.
-
-    :param iterable:
-    :param function:
-    """
-    for item in iterable:
-        function(item)
-    return None
-
-def size(iterable):
-    """
-    Obtain the size of the iterable
-
-    :param iterable:
-    """
-    counter = 0
-    for i in iterable:
-        counter += 1
-    return counter
-
-
-# noinspection PyShadowingBuiltins
-def reduce(iterable, reducer):
-    """
-    Get a merged value using an associative reduce function,
-    so as to reduce the iterable to a single value from left to right.
-
-    :param iterable:
-    :param reducer:
-    """
-
-    value = rd(reducer, iterable)
-
-    return value
 
 
 def frequency(iterable):
@@ -110,6 +71,27 @@ def twopass_variance(iterable):
 
     ret_result = sum_of_squares / (size_accumilator - 1)
     return ret_result
+
+
+def sample(iterable, max_size):
+    """
+    Make an iterator of `max_size` of randomly sampled elements from the original
+
+    :param iterable:
+    :param max_size:
+    """
+    from random import randint
+
+    reservoir = list()
+
+    for (i, item) in enumerate(iterable):
+        switch = randint(0, 1)
+        if len(reservoir) < max_size:
+            reservoir.append(item)
+        elif switch < max_size:
+            reservoir[switch] = item
+
+    return iter(reservoir)
 
 
 def online_variance(iterable):

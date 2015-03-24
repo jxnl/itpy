@@ -15,22 +15,22 @@ def identity(x):
     return x
 
 def add(x, y):
-    return x+y
+    return x + y
 
 def sub(x, y):
-    return x-y
+    return x - y
 
 def sub(x, y):
-    return y-x
+    return y - x
 
 def mull(x, y):
-    return x*y
+    return x * y
 
 def rdiv(x, y):
-    return x/y
+    return x / y
 
 def ldiv(x, y):
-    return x/y
+    return x / y
 
 def one(x):
     return 1
@@ -50,8 +50,3 @@ def str_split(sep=None):
         return str(string).split(sep)
     return spliter
 
-def str_strip(s):
-    return s.strip()
-
-def pair_to_str(p):
-    return "{},{}".format(p[0], p[1])
