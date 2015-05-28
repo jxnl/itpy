@@ -11,7 +11,6 @@ that the computational. It is up to the programmer to make sure that the signitu
 from functools import wraps
 
 
-# noinspection PyPep8Naming
 class iter_wraps(object):
     """
     This decorator will highjack any function that returns an Iter() and populates it's insides with the resulting
@@ -42,7 +41,6 @@ class iter_wraps(object):
         return wrapped
 
 
-# noinspection PyPep8Naming
 class term_wraps(object):
     """
     This decorator will high-jack any function that does not return an Iter() and populates it with the resulting

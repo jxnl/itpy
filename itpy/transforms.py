@@ -37,10 +37,8 @@ def flatmap(iterable, function_to_list):
     :param function_to_list:
     """
 
-    itera = iter(iterable)
-
-    while True:
-        list_block = function_to_list(itera.next())
+    for single_element in iterable:
+        list_block = function_to_list(single_element)
         for result_value in list_block:
             yield result_value
 
@@ -68,7 +66,7 @@ def filterfalse(iterable, predicate):
     :param iterable:
     :param predicate:
     """
-    return iter(it.ifilterfalse(predicate, iterable))
+    return iter(it.filterfalse(predicate, iterable))
 
 
 def takewhile(iterable, predicate):
@@ -205,7 +203,7 @@ def sort(iterable, cmp=None, key=None, reverse=False):
     TODO: Make lazy
 
     """
-    sorted_iterable = sorted(iterable, cmp=cmp, key=key, reverse=reverse)
+    sorted_iterable = sorted(iterable, key=key, reverse=reverse)
 
     return iter(sorted_iterable)
 
