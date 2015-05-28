@@ -54,10 +54,9 @@ def filter(iterable, predicate):
     :param iterable:
     :param predicate:
     """
-    if it.ifilter:
-        return iter(it.ifilter(predicate, iterable))
-    else:
-        return iter(filter(predicate, iterable))
+    for x in iterable:
+        if predicate(x):
+            yield x
 
 
 def filterfalse(iterable, predicate):
@@ -160,7 +159,6 @@ def union(iterable, *iterables):
     return iter(it.chain(iterable, *iterables))
 
 
-# noinspection PyShadowingBuiltins
 def slice(iterable, *args):
     """
     Make an iterator that returns selected elements from the iterable.
