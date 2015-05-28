@@ -179,13 +179,13 @@ class Itpy(object):
 
     """
 
-    @term_wraps(sketch.count_distinct_approx)
-    def count_distinct_approx(self, init_cap=200, err_rate=0.001):
-        return Itpy.VALUE
+    #@term_wraps(sketch.count_distinct_approx)
+    #def count_distinct_approx(self, init_cap=200, err_rate=0.001):
+        #return Itpy.VALUE
 
-    @term_wraps(sketch.to_bloomfilter)
-    def to_bloomfilter(self, init_cap=200, err_rate=0.001):
-        return Itpy.VALUE
+    #@term_wraps(sketch.to_bloomfilter)
+    #def to_bloomfilter(self, init_cap=200, err_rate=0.001):
+        #return Itpy.VALUE
 
     """
     Don't worry about these

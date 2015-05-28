@@ -11,12 +11,11 @@ and an iterable.
 """
 
 from collections import defaultdict
-from lambdas import identity, keyf, valuef
+from itpy.lambdas import identity, keyf, valuef
 
 import itertools as it
 
 
-# noinspection PyShadowingBuiltins
 def map(iterable, function):
     """
     Make an iterator that computes the function using arguments
@@ -46,7 +45,6 @@ def flatmap(iterable, function_to_list):
             yield result_value
 
 
-# noinspection PyShadowingBuiltins
 def filter(iterable, predicate):
     """
     Make an iterator that filters elements from iterable returning only those
@@ -56,7 +54,10 @@ def filter(iterable, predicate):
     :param iterable:
     :param predicate:
     """
-    return iter(it.ifilter(predicate, iterable))
+    if it.ifilter:
+        return iter(it.ifilter(predicate, iterable))
+    else:
+        return iter(filter(predicate, iterable))
 
 
 def filterfalse(iterable, predicate):
@@ -100,7 +101,8 @@ def groupby(iterable, key=identity, value=identity):
     """
     Make an iterator that returns consecutive keys and groups from the iterable
     The key and value is computed each element by keyfunc and valfunc.
-    If these functions are not not specified or is None, default to identity function.
+    If these functions are not not specified or is None,
+    default to identity function.
 
     :param iterable:
     :param key:
@@ -178,7 +180,8 @@ def slice(iterable, *args):
 
 def take(iterable, max):
     """
-    Make and iterator that returns the first max elements from the original iterable
+    Make and iterator that returns the first max elements
+    from the original iterable
 
     :param iterable:
     :param max:
@@ -211,8 +214,8 @@ def sort(iterable, cmp=None, key=None, reverse=False):
 
 def top(iterable, max_size=1, key=None):
     """
-    Make an iterable of the top max_size elements of the original iterable sorted on keyfunc, if keyfunc is None sort
-    on the natural ordering.
+    Make an iterable of the top max_size elements of the original iterable
+    sorted on keyfunc, if keyfunc is None sort on the natural ordering.
 
     :param iterable:
     :param max_size:
@@ -237,7 +240,8 @@ def top(iterable, max_size=1, key=None):
 
 def sample(iterable, max_size):
     """
-    Make an iterator of `max_size` of randomly sampled elements from the original
+    Make an iterator of `max_size` of randomly sampled
+    elements from the original
 
     :param iterable:
     :param max_size:
@@ -251,7 +255,7 @@ def sample(iterable, max_size):
         if len(reservoir) < max_size:
             reservoir.append(item)
         elif switch < max_size:
-           reservoir[switch] = item
+            reservoir[switch] = item
 
     return iter(reservoir)
 
@@ -272,9 +276,11 @@ def distinct(iterable):
 
     return distincting(iterable)
 
+
 def intercept(iterable, function):
     """
-    Make an iterable from the original one but intercept the value and evaluate the function for the value.
+    Make an iterable from the original one but intercept
+    the value and evaluate the function for the value.
     This may be valuable for logging and debuging.
 
     :param iterable:
@@ -285,6 +291,7 @@ def intercept(iterable, function):
             function(item)
             yield item
     return intercepting(iterable)
+
 
 def batch(iterable, size):
     """
