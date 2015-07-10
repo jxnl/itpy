@@ -9,7 +9,47 @@ This module contains functions that compute summaries over the iterable.
 """
 from __future__ import division
 from collections import Counter
+from functools import reduce as rd
 
+
+def for_each(iterable, function):
+    """
+    Evaluate the function for every value of the iterable. This is used inplace of map when we do not care about keeping
+    the results. Unlike transform.intercept, this returns nothing.
+
+    :param iterable:
+    :param function:
+    """
+    for item in iterable:
+        function(item)
+    return None
+
+
+def size(iterable):
+    """
+    Obtain the size of the iterable
+
+    :param iterable:
+    """
+    counter = 0
+    for i in iterable:
+        counter += 1
+    return counter
+
+
+# noinspection PyShadowingBuiltins
+def reduce(iterable, reducer):
+    """
+    Get a merged value using an associative reduce function,
+    so as to reduce the iterable to a single value from left to right.
+
+    :param iterable:
+    :param reducer:
+    """
+
+    value = rd(reducer, iterable)
+
+    return value
 
 def frequency(iterable):
     """
