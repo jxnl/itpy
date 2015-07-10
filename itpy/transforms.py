@@ -11,9 +11,10 @@ and return and an iterable.
 """
 
 from collections import defaultdict
-from lambdas import identity
-
 import itertools as it
+import types
+
+from lambdas import identity
 
 
 def distinct(iterable):
@@ -42,10 +43,12 @@ def intercept(iterable, function):
     :param iterable:
     :param function:
     """
+
     def intercepting(iterable_):
         for item in iterable_:
             function(item)
             yield item
+
     return intercepting(iterable)
 
 
@@ -91,7 +94,6 @@ def dropwhile(iterable, predicate):
     return iter(it.dropwhile(predicate, iterable))
 
 
-# noinspection PyShadowingBuiltins
 def filter(iterable, predicate):
     """
     Make an iterator that filters elements from iterable returning only those
@@ -101,10 +103,13 @@ def filter(iterable, predicate):
     :param iterable:
     :param predicate:
     """
-    return iter(it.ifilter(predicate, iterable))
+
+    for x in iterable:
+        if predicate(x):
+            yield x
 
 
-def filter_not(iterable, predicate):
+def filterfalse(iterable, predicate):
     """
     Make an iterator that filters elements from iterable returning only those
     for which the predicate is False.
@@ -113,7 +118,9 @@ def filter_not(iterable, predicate):
     :param iterable:
     :param predicate:
     """
-    return iter(it.ifilterfalse(predicate, iterable))
+    for x in iterable:
+        if not predicate(x):
+            yield x
 
 
 # TODO
@@ -137,11 +144,8 @@ def flatmap(iterable, function_to_list):
     :param iterable:
     :param function_to_list:
     """
-
-    iterable_ = iter(iterable)
-
-    while True:
-        list_block = function_to_list(iterable_.next())
+    for element in iterable:
+        list_block = function_to_list(element)
         for result_value in list_block:
             yield result_value
 
@@ -152,10 +156,9 @@ def flatten(iterable):
 
     :param iterable:
     """
-    for iterable_ in iterable:
-        for element in iterable_:
+    for element_iterable in iterable:
+        for element in element_iterable:
             yield element
-
 
 
 def fold(iterable, func):
@@ -181,7 +184,8 @@ def forall(iterable, predicate):
             return False
     return True
 
-def groupby(iterable, key=identity):
+
+def groupby(iterable, key=identity, value=identity):
     """
     Make a dict that returns consecutive keys and groups from the iterable
     The key is computed each element by keyfunc.
@@ -193,7 +197,10 @@ def groupby(iterable, key=identity):
     group_by_collection = defaultdict(list)
     for element in iterable:
         k = key(element)
-        group_by_collection[k].append(element)
+        if isinstance(value, types.FunctionType):
+            group_by_collection[k].append(value(element))
+        else:
+            group_by_collection[k].append(value)
 
     return group_by_collection
 
@@ -225,7 +232,6 @@ def hasDefiniteSize(iterable):
     return hasattr(iterable, '__len__')
 
 
-# noinspection PyShadowingBuiltins
 def map(iterable, function):
     """
     Make an iterator that computes the function using arguments
@@ -397,6 +403,7 @@ def take(iterable, n):
     :param iterable:
     :param n:
     """
+
     def taking(iterable_):
         for i, e in enumerate(iterable_):
             if i < n:
@@ -418,7 +425,7 @@ def takewhile(iterable, predicate):
 
 def toArray(iterable):
     import array
-    return array(iterable)
+    return array.array(iterable)
 
 
 def toList(iterable):
