@@ -13,7 +13,7 @@ and an iterable.
 from collections import defaultdict
 import itertools as it
 
-from itpy.helpers import identity, keyf, valuef
+from itpy.helpers import identity
 
 
 def map(iterable, function):
@@ -28,7 +28,7 @@ def map(iterable, function):
         yield function(x)
 
 
-def flatmap(iterable, function_to_list):
+def flatmap(iterable, function_to_iterable):
     """
     Make an interator that returns the elements of the lists produced
     by mapping function_to_list onto the original iterable.
@@ -38,7 +38,7 @@ def flatmap(iterable, function_to_list):
     """
 
     for single_element in iterable:
-        list_block = function_to_list(single_element)
+        list_block = function_to_iterable(single_element)
         for result_value in list_block:
             yield result_value
 
@@ -52,6 +52,7 @@ def filter(iterable, predicate):
     :param iterable:
     :param predicate:
     """
+
     for x in iterable:
         if predicate(x):
             yield x
@@ -117,7 +118,7 @@ def groupby(iterable, key=identity, value=identity):
     return grouping(iterable, key, value)
 
 
-def reduceby(iterable, reducer, key=keyf, value=valuef):
+def reduceby(iterable, reducer, key, value):
     """
     Make an iterator that returns the merged values for each key using an
     associative reduce function.The values contained in this iterable must be
@@ -192,7 +193,7 @@ def take(iterable, max):
     return taking(iterable)
 
 
-def sort(iterable, cmp=None, key=None, reverse=False):
+def sort(iterable, **kwargs):
     """
     Make and iterator that is sorted on a specific key, if key is None, sort on
     natural ordering.
@@ -202,10 +203,10 @@ def sort(iterable, cmp=None, key=None, reverse=False):
     :param key:
     :param reverse:
 
-    TODO: Make lazy
+    TODO: make lazy, make it smarter about sorting large things. maybe use a heap?
 
     """
-    sorted_iterable = sorted(iterable, key=key, reverse=reverse)
+    sorted_iterable = sorted(iterable, **kwargs)
 
     return iter(sorted_iterable)
 
