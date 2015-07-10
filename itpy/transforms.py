@@ -67,7 +67,9 @@ def filterfalse(iterable, predicate):
     :param iterable:
     :param predicate:
     """
-    return iter(it.filterfalse(predicate, iterable))
+    for x in iterable:
+        if not predicate(x):
+            yield x
 
 
 def takewhile(iterable, predicate):
