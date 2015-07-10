@@ -12,7 +12,4 @@ setup(name='itpy',
       license='MIT',
       packages=['itpy'],
       include_package_data=True,
-      install_requires=[
-          ['pybloom']
-      ],
       )

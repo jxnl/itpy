@@ -12,13 +12,10 @@ large ammounts of data!
 """
 from __future__ import print_function
 
-from threading import Lock
-
 from itpy.decorators import iter_wraps, term_wraps
-from itpy.lambdas import keyf, valuef, identity
+from itpy.helpers import identity, getitem
 import itpy.transforms as transforms
 import itpy.summary as summary
-import itpy.sketch as sketch
 import itpy.iio as iio
 
 
@@ -34,6 +31,7 @@ class Itpy(object):
             self._src = itpy._src
         else:
             self._stack = []
+
     """
     Transformations
     ~~~~~~~~~~~~~~~
@@ -63,7 +61,7 @@ class Itpy(object):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.reduceby)
-    def reduceby(self, reducer, key=keyf, value=valuef):
+    def reduceby(self, reducer, key=getitem(0), value=getitem(1)):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.groupby)
@@ -110,13 +108,6 @@ class Itpy(object):
     def intercept(self, function):
         return Itpy(itpy=self)
 
-    """
-    Stream Summaries
-    ~~~~~~~~~~~~~~~~
-
-    These methods provides you the ability to calculate various features of the data stream.
-    """
-
     @term_wraps(summary.frequency)
     def frequency(self):
         return Itpy.VALUE
@@ -140,14 +131,6 @@ class Itpy(object):
     @term_wraps(summary.size)
     def size(self):
         return Itpy.VALUE
-
-    """
-    Iterables & I/O
-    ~~~~~~~~~~~~~~~
-
-    These methods provide basic file I/O for reading and writing to files and from stdin and stdout.
-    It is imporant to note that if a file already exists it will truncate it first.
-    """
 
     @staticmethod
     @iter_wraps(iio.from_file)
@@ -179,23 +162,17 @@ class Itpy(object):
 
     """
 
-    @term_wraps(sketch.count_distinct_approx)
-    def count_distinct_approx(self, init_cap=200, err_rate=0.001):
-        return Itpy.VALUE
+    # @term_wraps(sketch.count_distinct_approx)
+    # def count_distinct_approx(self, init_cap=200, err_rate=0.001):
+    # return Itpy.VALUE
 
-    @term_wraps(sketch.to_bloomfilter)
-    def to_bloomfilter(self, init_cap=200, err_rate=0.001):
-        return Itpy.VALUE
+    # @term_wraps(sketch.to_bloomfilter)
+    # def to_bloomfilter(self, init_cap=200, err_rate=0.001):
+    # return Itpy.VALUE
 
-    """
-    Don't worry about these
-    ~~~~~~~~~~~~~~~~~~~~~~~
-
-    These contains magic methods that will allow you to do interesting things with the python syntax.
-    """
 
     @property
-    def _(self): # Collect the elements of the iter into a list
+    def _(self):  # Collect the elements of the iter into a list
         return list(self)
 
     def __repr__(self):

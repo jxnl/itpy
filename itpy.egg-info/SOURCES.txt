@@ -10,7 +10,6 @@ itpy/transforms.py
 itpy.egg-info/PKG-INFO
 itpy.egg-info/SOURCES.txt
 itpy.egg-info/dependency_links.txt
-itpy.egg-info/requires.txt
 itpy.egg-info/top_level.txt
 itpy/tests/__init__.py
 itpy/tests/test_itpy.py
