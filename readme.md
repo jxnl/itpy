@@ -1,6 +1,8 @@
 itpy.py
 =========
 
+![https://travis-ci.org/jxnl/itpy.svg?branch=master](https://travis-ci.org/jxnl/itpy.svg?branch=master)
+
 Built on the back of itertools, `itpy` allows easy list processing through chaining methods.
 Everything is a lazy evaluated generating function so nothing happens until you call a method
 with side effects. This allows for a fast memory effecient 'keep what you need' way of processing
