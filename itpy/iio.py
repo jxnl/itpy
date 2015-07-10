@@ -8,6 +8,7 @@ This module contains methods for different I/O requirements.
 
 from __future__ import print_function
 
+
 def from_file(path_to_file, buffer=1):
     """
     Make an iterable from the file that the path points to, the arguments mirrors how open() is implemented

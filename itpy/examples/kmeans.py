@@ -12,7 +12,7 @@ from os.path import join, dirname
 from random import random
 
 from itpy import Itpy
-from itpy.lambdas import str_split, str_strip
+from itpy.helpers import str_split, str_strip
 
 
 fn = str(join(dirname(__file__), 'data_for_kmeans.csv'))

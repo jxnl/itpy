@@ -11,6 +11,7 @@ from __future__ import division
 from collections import Counter
 from functools import reduce as rd
 
+
 def for_each(iterable, function):
     """
     Evaluate the function for every value of the iterable. This is used inplace of map when we do not care about keeping
@@ -22,6 +23,7 @@ def for_each(iterable, function):
     for item in iterable:
         function(item)
     return None
+
 
 def size(iterable):
     """

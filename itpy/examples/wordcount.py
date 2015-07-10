@@ -20,7 +20,7 @@ from __future__ import print_function
 from os.path import join, dirname
 
 from itpy import Itpy
-from itpy.lambdas import str_split, str_strip, identity, one, add, valuef, pair_to_str
+from itpy.helpers import str_split, str_strip, identity, one, add, valuef, pair_to_str
 
 
 file_name = str(join(dirname(__file__), 'zen.txt'))

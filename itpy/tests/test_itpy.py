@@ -11,6 +11,7 @@ For these tests you will notice that ._ is being called. this results in the ter
 from __future__ import division
 
 import unittest
+from functools import reduce
 
 from itpy import Itpy as _
 
@@ -18,7 +19,7 @@ from itpy import Itpy as _
 class test_itpy(unittest.TestCase):
 
     def setUp(self):
-        self.seq = range(10)
+        self.seq = list(range(10))
         self.mapf = lambda x: x ** 2
         self.filterf = lambda x: x % 2 == 0
         self.flatmapf = lambda x: [x, x + 1, x + 2]
@@ -31,21 +32,21 @@ class test_itpy(unittest.TestCase):
         lst = _(self.seq)
         self.assertEqual(
             lst.map(self.mapf)._,
-            map(self.mapf, self.seq)
+            list(map(self.mapf, self.seq))
         )
 
     def test_filter(self):
         lst = _(self.seq)
         self.assertEqual(
             lst.filter(self.filterf)._,
-            filter(self.filterf, self.seq)
+            list(filter(self.filterf, self.seq))
         )
 
     def test_filter_false(self):
         lst = _(self.seq)
         self.assertEqual(
             lst.filterfalse(self.filterf)._,
-            filter(lambda x: not self.filterf(x), self.seq)
+            list(filter(lambda x: not self.filterf(x), self.seq))
         )
 
     def test_fmap(self):
