@@ -5,8 +5,9 @@ itpy.lambdas
 ~~~~~~~~~~~~
 
 This module contains some helper classes and gives  names to lambda expressions for readability
-
 """
+
+import types
 
 
 def not_none(x):
@@ -17,38 +18,51 @@ def identity(x):
     return x
 
 
-def add(x, y):
-    return x + y
-
-
-def sub(x, y):
-    return x - y
-
-
-def mull(x, y):
-    return x * y
-
-
-def rdiv(x, y):
-    return x / y
-
-
-def ldiv(x, y):
-    return x / y
-
-
 def one(x):
     return 1
 
 
-def keyf(x):
-    assert len(x) == 2
-    return x[0]
+def number(x):
+    def num(y):
+        return x
+
+    return num
 
 
-def valuef(x):
-    assert len(x) == 2
-    return x[1]
+def get_key(*keys):
+    def key_getter(obj):
+        k = obj
+        for key in keys:
+            k = k[key]
+        return k
+
+    return key_getter
+
+
+def try_or(try_f, orfail, exception=Exception):
+    def try_expression(obj):
+        try:
+            return try_f(obj)
+        except exception:
+            if isinstance((orfail, types.FunctionType)):
+                return orfail(obj)
+            return orfail
+
+    return try_expression
+
+
+def if_else(if_predicate, if_return, else_return):
+    def if_else_expression(obj):
+        if if_predicate(obj):
+            if isinstance(if_return, types.FunctionType):
+                return if_return(obj)
+            return if_return
+        else:
+            if isinstance(else_return, types.FunctionType):
+                return else_return(obj)
+            return else_return
+
+    return if_else_expression
 
 
 def str_split(sep=None):
