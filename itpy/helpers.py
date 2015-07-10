@@ -81,3 +81,9 @@ def str_strip(s):
 
 def pair_to_str(p):
     return "{},{}".format(p[0], p[1])
+
+
+def getitem(x):
+    def getter(obj):
+        return obj[x]
+    return getter

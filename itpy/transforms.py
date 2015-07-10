@@ -13,7 +13,7 @@ and an iterable.
 from collections import defaultdict
 import itertools as it
 
-from itpy.helpers import identity
+from itpy.helpers import identity, getitem
 
 
 def map(iterable, function):
@@ -118,7 +118,7 @@ def groupby(iterable, key=identity, value=identity):
     return grouping(iterable, key, value)
 
 
-def reduceby(iterable, reducer, key, value):
+def reduceby(iterable, reducer, key=getitem(0), value=getitem(1)):
     """
     Make an iterator that returns the merged values for each key using an
     associative reduce function.The values contained in this iterable must be
