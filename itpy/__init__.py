@@ -13,10 +13,9 @@ large ammounts of data!
 from __future__ import print_function
 
 from itpy.decorators import iter_wraps, term_wraps
-from itpy.helpers import keyf, valuef, identity
+from itpy.helpers import identity, getitem
 import itpy.transforms as transforms
 import itpy.summary as summary
-import itpy.sketch as sketch
 import itpy.iio as iio
 
 
@@ -62,7 +61,7 @@ class Itpy(object):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.reduceby)
-    def reduceby(self, reducer, key=keyf, value=valuef):
+    def reduceby(self, reducer, key=getitem(0), value=getitem(1)):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.groupby)
