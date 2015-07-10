@@ -11,9 +11,9 @@ and an iterable.
 """
 
 from collections import defaultdict
-from itpy.lambdas import identity, keyf, valuef
-
 import itertools as it
+
+from itpy.helpers import identity, keyf, valuef
 
 
 def map(iterable, function):
@@ -128,6 +128,7 @@ def reduceby(iterable, reducer, key=keyf, value=valuef):
     :param key:
     :param value:
     """
+
     def reducing(iterable_, reducer_, key_, value_):
         group_by = dict()
 
@@ -182,6 +183,7 @@ def take(iterable, max):
     :param iterable:
     :param max:
     """
+
     def taking(iterable_):
         for i, e in enumerate(iterable_):
             if i < max:
@@ -282,10 +284,12 @@ def intercept(iterable, function):
     :param iterable:
     :param function:
     """
+
     def intercepting(iterable_):
         for item in iterable_:
             function(item)
             yield item
+
     return intercepting(iterable)
 
 

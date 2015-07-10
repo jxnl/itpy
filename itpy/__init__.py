@@ -13,7 +13,7 @@ large ammounts of data!
 from __future__ import print_function
 
 from itpy.decorators import iter_wraps, term_wraps
-from itpy.lambdas import keyf, valuef, identity
+from itpy.helpers import keyf, valuef, identity
 import itpy.transforms as transforms
 import itpy.summary as summary
 import itpy.sketch as sketch
