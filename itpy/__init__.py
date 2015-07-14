@@ -14,6 +14,7 @@ from __future__ import print_function
 
 from itpy.decorators import iter_wraps, term_wraps
 from itpy.helpers import identity, getitem
+
 import itpy.transforms as transforms
 import itpy.summary as summary
 import itpy.iio as iio
@@ -48,6 +49,14 @@ class Itpy(object):
     def flatmap(self, function_to_list):
         return Itpy(itpy=self)
 
+    @iter_wraps(transforms.flatten)
+    def flatmap(self):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.forall)
+    def forall(self, predicate):
+        return Itpy(itpy=self)
+
     @iter_wraps(transforms.filter)
     def filter(self, predicate):
         return Itpy(itpy=self)
@@ -56,16 +65,24 @@ class Itpy(object):
     def filterfalse(self, predicate):
         return Itpy(itpy=self)
 
+    @iter_wraps(transforms.partition)
+    def partition(self, predicate):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.fold)
+    def fold(self, func, base):
+        return Itpy(itpy=self)
+
     @iter_wraps(transforms.sort)
     def sort(self, cmp=None, key=None, reverse=False):
         return Itpy(itpy=self)
 
-    @iter_wraps(transforms.reduceby)
-    def reduceby(self, reducer, key=getitem(0), value=getitem(1)):
-        return Itpy(itpy=self)
-
     @iter_wraps(transforms.groupby)
     def groupby(self, key=identity, value=identity):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.find)
+    def find(self, predicate, n=1):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.union)
@@ -90,14 +107,6 @@ class Itpy(object):
 
     @iter_wraps(transforms.slice)
     def slice(self, *args):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.sample)
-    def sample(self, max_size):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.batch)
-    def batch(self, size):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.distinct)
@@ -150,30 +159,12 @@ class Itpy(object):
     def to_file(self, path_to_file):
         return Itpy.VALUE
 
-    """
-    Sketching methods
-    ~~~~~~~~~~~~~~~~~
-
-    These algorithms have limited memory available to them (much less than the input size) and also limited
-    processing time per item. These constraints may mean that an algorithm produces an approximate answer
-    based on a summary or "sketch" of the data stream in memory.
-
-    TODO : HyperLogLog, Count-min
-
-    """
-
-    # @term_wraps(sketch.count_distinct_approx)
-    # def count_distinct_approx(self, init_cap=200, err_rate=0.001):
-    # return Itpy.VALUE
-
-    # @term_wraps(sketch.to_bloomfilter)
-    # def to_bloomfilter(self, init_cap=200, err_rate=0.001):
-    # return Itpy.VALUE
-
-
     @property
     def _(self):  # Collect the elements of the iter into a list
         return list(self)
+
+    def collect(self):
+        return self._
 
     def __repr__(self):
         return "Itpy({}).{}".format(self._src, ".".join(self._stack))

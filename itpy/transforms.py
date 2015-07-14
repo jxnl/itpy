@@ -11,10 +11,10 @@ and return and an iterable.
 """
 
 from collections import defaultdict
+from itpy.helpers import identity
+
 import itertools as it
 import types
-
-from lambdas import identity
 
 
 def distinct(iterable):
@@ -52,18 +52,6 @@ def intercept(iterable, function):
     return intercepting(iterable)
 
 
-def diff(iterable1, iterable2):
-    """
-    Makes an iterator of the multiset difference between
-    two iterables
-
-    :param iterable1:
-    :param iterable2:
-    :return:
-    """
-    pass
-
-
 def drop(iterable, n):
     """
     Make and iterator of the original iterator without the first n elements
@@ -72,10 +60,10 @@ def drop(iterable, n):
     :param n:
     :return:
     """
-    i = 0
+    counter = 0
     for element in iterable:
-        if i < n:
-            i += 1
+        if counter < n:
+            counter += 1
         else:
             yield element
 
@@ -123,17 +111,17 @@ def filterfalse(iterable, predicate):
             yield x
 
 
-# TODO
-def find(iterable, predicate):
+def find(iterable, predicate, n=1):
     """
     Produce the first element in the iterable that satisfies the predicate
 
     :param iterable:
     :param predicate:
     """
+    counter = 0
     for element in iterable:
-        if predicate(element):
-            return element
+        if predicate(element) and counter < n:
+            yield element
 
 
 def flatmap(iterable, function_to_list):
@@ -161,14 +149,17 @@ def flatten(iterable):
             yield element
 
 
-def fold(iterable, func):
+def fold(iterable, func, base):
     """
     Folds the elements of this iterable using an associative binary operator
 
     :param iterable:
     :param func:
     """
-    pass
+    acc = base
+    for element in iterable:
+        acc = func(acc, element)
+    return acc
 
 
 def forall(iterable, predicate):
@@ -193,7 +184,6 @@ def groupby(iterable, key=identity, value=identity):
     :param iterable:
     :param key:
     """
-
     group_by_collection = defaultdict(list)
     for element in iterable:
         k = key(element)
@@ -223,7 +213,7 @@ def grouped(iterable, n):
             yield batched
 
 
-def hasDefiniteSize(iterable):
+def has_definite_size(iterable):
     """
     Tests whether an iterable is know to have a finite size
 
@@ -244,44 +234,47 @@ def map(iterable, function):
         yield function(x)
 
 
-# TODO
 def max(iterable):
     """
-
     :param iterable:
-    :return:
+    :return max element:
     """
-    pass
+    max = None
+    for element in iterable:
+        if max and element > max:
+            max = element
+    return max
 
 
-# TODO
 def maxBy(iterable, function):
     """
 
     :param iterable:
     :param function:
     """
-    pass
+    return max(map(iterable, function))
 
 
-# TODO
 def min(iterable):
     """
 
     :param iterable:
     :return:
     """
-    pass
+    min = None
+    for element in iterable:
+        if min and element < min:
+            min = element
+    return min
 
 
-# TODO
 def minBy(iterable, function):
     """
 
     :param iterable:
     :param function:
     """
-    pass
+    return min(map(iterable, function))
 
 
 def partition(iterable, predicate):
@@ -425,6 +418,7 @@ def takewhile(iterable, predicate):
 
 def toArray(iterable):
     import array
+
     return array.array(iterable)
 
 
