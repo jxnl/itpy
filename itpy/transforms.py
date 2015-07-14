@@ -11,7 +11,7 @@ and return and an iterable.
 """
 
 from collections import defaultdict
-from itpy.helpers import identity
+from itpy.helpers import identity, getitem
 
 import itertools as it
 import types
@@ -414,6 +414,34 @@ def takewhile(iterable, predicate):
     :param predicate:
     """
     return iter(it.takewhile(predicate, iterable))
+
+def reduceby(iterable, reducer, key=getitem(0), value=getitem(1)):
+    """
+    Make an iterator that returns the merged values for each key using an
+    associative reduce function.The values contained in this iterable must be
+    2-tuples in the form (k, v).
+    :param iterable:
+    :param reducer:
+    :param key:
+    :param value:
+    """
+
+    def reducing(iterable_, reducer_, key_, value_):
+        group_by = dict()
+
+        for element in iterable_:
+            (k, v) = (key_(element), value_(element))
+
+            if k in group_by:
+                group_by[k] = reducer_(group_by[k], v)
+            else:
+                group_by[k] = v
+
+        for ke in group_by:
+            yield (ke, group_by[ke])
+
+    return reducing(iterable, reducer, key, value)
+
 
 
 def toArray(iterable):
