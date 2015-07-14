@@ -92,14 +92,6 @@ class Itpy(object):
     def slice(self, *args):
         return Itpy(itpy=self)
 
-    @iter_wraps(transforms.sample)
-    def sample(self, max_size):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.batch)
-    def batch(self, size):
-        return Itpy(itpy=self)
-
     @iter_wraps(transforms.distinct)
     def distinct(self):
         return Itpy(itpy=self)
