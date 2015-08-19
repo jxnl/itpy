@@ -44,7 +44,7 @@ def try_or(try_f, orfail, exception=Exception):
         try:
             return try_f(obj)
         except exception:
-            if isinstance((orfail, types.FunctionType)):
+            if isinstance(orfail, types.FunctionType):
                 return orfail(obj)
             return orfail
 
