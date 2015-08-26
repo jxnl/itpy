@@ -11,7 +11,7 @@ and return and an iterable.
 """
 
 from collections import defaultdict
-from itpy.helpers import identity, getitem
+from itpy.helpers import identity, getitem, haslen
 
 import itertools as it
 import types
@@ -162,7 +162,8 @@ def fold(iterable, func, base):
     return acc
 
 
-def forall(iterable, predicate):
+#TODO Move to summary
+def for_all(iterable, predicate):
     """
     Test if predicate holds for all elements in iterator
 
@@ -175,8 +176,9 @@ def forall(iterable, predicate):
             return False
     return True
 
-
-def groupby(iterable, key=identity, value=identity):
+# TODO Not sure where this belongs, unless we make it return a iterable.
+# TODO Refer to itertools.groupby implementation
+def groupby(iterable, keyfunc=identity, value=identity):
     """
     Make a dict that returns consecutive keys and groups from the iterable
     The key is computed each element by keyfunc.
@@ -186,7 +188,7 @@ def groupby(iterable, key=identity, value=identity):
     """
     group_by_collection = defaultdict(list)
     for element in iterable:
-        k = key(element)
+        k = keyfunc(element)
         if isinstance(value, types.FunctionType):
             group_by_collection[k].append(value(element))
         else:
@@ -305,7 +307,6 @@ def permutations(iterable):
     pass
 
 
-# TODO
 def intersect(iterable1, iterable2):
     """
     Returns iterable of the multiset intersection of two iterables
@@ -313,7 +314,8 @@ def intersect(iterable1, iterable2):
     :param iterable1:
     :param iterable2:
     """
-    pass
+    if haslen(iterable1) and haslen(iterable2):
+        (iterable1)
 
 
 def slice(iterable, *args):
@@ -345,21 +347,19 @@ def size(iterable):
         return None
 
 
-def sort(iterable, cmp=None, key=None, reverse=False):
+def sort(iterable, **kwargs):
     """
-    Make and iterator that is sorted on a specific key, if key is None, sort on
-    natural ordering.
+    Make and iterator that is sorted on a specific key,
+    if key is None, sort on natural ordering.
+
+    Calling this currently just calls sorted(iterable, **kwargs)
 
     :param iterable:
     :param cmp:
     :param key:
     :param reverse:
-
-    TODO: Make lazy
-
     """
-    sorted_iterable = sorted(iterable, cmp=cmp, key=key, reverse=reverse)
-
+    sorted_iterable = sorted(iterable, **kwargs)
     return iter(sorted_iterable)
 
 
@@ -415,11 +415,13 @@ def takewhile(iterable, predicate):
     """
     return iter(it.takewhile(predicate, iterable))
 
+
 def reduceby(iterable, reducer, key=getitem(0), value=getitem(1)):
     """
     Make an iterator that returns the merged values for each key using an
     associative reduce function.The values contained in this iterable must be
     2-tuples in the form (k, v).
+
     :param iterable:
     :param reducer:
     :param key:

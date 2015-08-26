@@ -48,8 +48,20 @@ class Itpy(object):
     def flatmap(self, function_to_list):
         return Itpy(itpy=self)
 
+    @iter_wraps(transforms.flatten)
+    def flatten(self):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.fold)
+    def fold(self, func, base):
+        return Itpy(itpy=self)
+
     @iter_wraps(transforms.filter)
     def filter(self, predicate):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.find)
+    def find(self, predictate, n=1):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.filterfalse)
@@ -65,7 +77,15 @@ class Itpy(object):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.groupby)
-    def groupby(self, key=identity, value=identity):
+    def groupby(self, keyfunc=identity, value=identity):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.grouped)
+    def grouped(self, n):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.grouped)
+    def batch(self, n):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.union)
@@ -78,6 +98,10 @@ class Itpy(object):
 
     @iter_wraps(transforms.takewhile)
     def takewhile(self, predicate):
+        return Itpy(itpy=self)
+
+    @iter_wraps(transforms.drop)
+    def drop(self, n):
         return Itpy(itpy=self)
 
     @iter_wraps(transforms.dropwhile)
@@ -114,6 +138,10 @@ class Itpy(object):
 
     @term_wraps(summary.for_each)
     def for_each(self, function):
+        return Itpy.VALUE
+
+    @term_wraps(transform.for_all)
+    def for_all(self, predicate):
         return Itpy.VALUE
 
     @term_wraps(summary.reduce)
@@ -177,6 +205,9 @@ class Itpy(object):
     def __iter__(self):
         for item in self._iter:
             yield item
+
+    def __len__(self):
+        return -1
 
     def next(self):
         return self._iter.next()
