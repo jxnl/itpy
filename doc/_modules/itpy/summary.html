@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>itpy.summary &mdash; it.py 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="it.py 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="itpy" href="../itpy.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for itpy.summary</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">itpy.summary</span>
+<span class="sd">~~~~~~~~~~~~</span>
+
+<span class="sd">This module contains functions that compute summaries over the iterable.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="nb">reduce</span> <span class="k">as</span> <span class="n">rd</span>
+
+<span class="kn">from</span> <span class="nn">itpy.helpers</span> <span class="kn">import</span>  <span class="n">identity</span>
+
+<span class="kn">import</span> <span class="nn">types</span>
+
+<div class="viewcode-block" id="for_all"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.for_all">[docs]</a><span class="k">def</span> <span class="nf">for_all</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if predicate holds for all elements in iterator</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span></div>
+
+<div class="viewcode-block" id="groupby"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.groupby">[docs]</a><span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">keyfunc</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">identity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make a dict that returns consecutive keys and groups from the iterable</span>
+<span class="sd">    The key is computed each element by keyfunc.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param key:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">group_by_collection</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">keyfunc</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">):</span>
+            <span class="n">group_by_collection</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group_by_collection</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">group_by_collection</span></div>
+
+<div class="viewcode-block" id="for_each"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.for_each">[docs]</a><span class="k">def</span> <span class="nf">for_each</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate the function for every value of the iterable. This is used inplace of map when we do not care about keeping</span>
+<span class="sd">    the results. Unlike transform.intercept, this returns nothing.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param function:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">function</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">None</span></div>
+
+
+<div class="viewcode-block" id="size"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.size">[docs]</a><span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obtain the size of the iterable</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">counter</span></div>
+
+
+<span class="c"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="reduce"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.reduce">[docs]</a><span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">reducer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a merged value using an associative reduce function,</span>
+<span class="sd">    so as to reduce the iterable to a single value from left to right.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param reducer:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">rd</span><span class="p">(</span><span class="n">reducer</span><span class="p">,</span> <span class="n">iterable</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="frequency"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.frequency">[docs]</a><span class="k">def</span> <span class="nf">frequency</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obtain the frequency of every item in the iterable.</span>
+<span class="sd">    It is important to note that it is currently implemented as a counter</span>
+<span class="sd">    so we must assume this counter fits into memory.</span>
+
+<span class="sd">    :rtype : Counter</span>
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+    <span class="n">freq</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">freq</span></div>
+
+
+<div class="viewcode-block" id="mean"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.mean">[docs]</a><span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the mean with a single pass of the iterable.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size_accumilator</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sum_of_values</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">sum_of_values</span> <span class="o">+=</span> <span class="n">x</span>
+        <span class="n">size_accumilator</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c"># Practice safe division.</span>
+    <span class="k">if</span> <span class="n">size_accumilator</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="n">ret_result</span> <span class="o">=</span> <span class="n">sum_of_values</span> <span class="o">/</span> <span class="n">size_accumilator</span>
+    <span class="k">return</span> <span class="n">ret_result</span></div>
+
+
+<div class="viewcode-block" id="twopass_variance"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.twopass_variance">[docs]</a><span class="k">def</span> <span class="nf">twopass_variance</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the variance with two passes of the iterable,</span>
+<span class="sd">    once to calculate the mean, next to calculate the sum of squares.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size_accumilator</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sum_of_squares</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">mean_result</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">size_accumilator</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean_result</span><span class="p">)</span>
+        <span class="n">sum_of_squares</span> <span class="o">+=</span> <span class="n">difference</span> <span class="o">*</span> <span class="n">difference</span>
+
+    <span class="c"># Practice safe division.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">size_accumilator</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="n">ret_result</span> <span class="o">=</span> <span class="n">sum_of_squares</span> <span class="o">/</span> <span class="p">(</span><span class="n">size_accumilator</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret_result</span></div>
+
+
+<div class="viewcode-block" id="sample"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.sample">[docs]</a><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">max_size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator of `max_size` of randomly sampled elements from the original</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param max_size:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+
+    <span class="n">reservoir</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="n">switch</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reservoir</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_size</span><span class="p">:</span>
+            <span class="n">reservoir</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">switch</span> <span class="o">&lt;</span> <span class="n">max_size</span><span class="p">:</span>
+            <span class="n">reservoir</span><span class="p">[</span><span class="n">switch</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">reservoir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="online_variance"><a class="viewcode-back" href="../../itpy/summary.html#itpy.summary.online_variance">[docs]</a><span class="k">def</span> <span class="nf">online_variance</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the variance with one pass of the iterable.</span>
+<span class="sd">    This method allows for partial answers up to the procced value.</span>
+
+<span class="sd">    Note, unless your are are certain that your data is shuffled,</span>
+<span class="sd">    you will not get meaningful partial results.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size_accumilator</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">current_mean</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">m2</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="n">size_accumilator</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">difference</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">current_mean</span>
+            <span class="n">current_mean</span> <span class="o">+=</span> <span class="n">difference</span> <span class="o">/</span> <span class="n">size_accumilator</span>
+            <span class="n">m2</span> <span class="o">+=</span> <span class="n">difference</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">current_mean</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c"># Practice safe division.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">size_accumilator</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="n">variance</span> <span class="o">=</span> <span class="n">m2</span> <span class="o">/</span> <span class="p">(</span><span class="n">size_accumilator</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">variance</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../itpy.html">itpy</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Jason Liu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

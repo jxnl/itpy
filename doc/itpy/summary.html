@@ -1,0 +1,277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Streaming Summary &mdash; it.py 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="it.py 0.0.1 documentation" href="../index.html" />
+    <link rel="next" title="Streaming IO" href="iio.html" />
+    <link rel="prev" title="Streaming Transformations" href="transforms.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-itpy.summary">
+<span id="streaming-summary"></span><h1>Streaming Summary<a class="headerlink" href="#module-itpy.summary" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="itpy-summary">
+<h2>itpy.summary<a class="headerlink" href="#itpy-summary" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions that compute summaries over the iterable.</p>
+<dl class="function">
+<dt id="itpy.summary.for_all">
+<code class="descclassname">itpy.summary.</code><code class="descname">for_all</code><span class="sig-paren">(</span><em>iterable</em>, <em>predicate</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#for_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.for_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if predicate holds for all elements in iterator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iterable</strong> &#8211; </li>
+<li><strong>predicate</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.for_each">
+<code class="descclassname">itpy.summary.</code><code class="descname">for_each</code><span class="sig-paren">(</span><em>iterable</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#for_each"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.for_each" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the function for every value of the iterable. This is used inplace of map when we do not care about keeping
+the results. Unlike transform.intercept, this returns nothing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iterable</strong> &#8211; </li>
+<li><strong>function</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.frequency">
+<code class="descclassname">itpy.summary.</code><code class="descname">frequency</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#frequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.frequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain the frequency of every item in the iterable.
+It is important to note that it is currently implemented as a counter
+so we must assume this counter fits into memory.</p>
+<p>:rtype : Counter
+:param iterable:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.groupby">
+<code class="descclassname">itpy.summary.</code><code class="descname">groupby</code><span class="sig-paren">(</span><em>iterable</em>, <em>keyfunc=&lt;function identity&gt;</em>, <em>value=&lt;function identity&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#groupby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.groupby" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a dict that returns consecutive keys and groups from the iterable
+The key is computed each element by keyfunc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iterable</strong> &#8211; </li>
+<li><strong>key</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.mean">
+<code class="descclassname">itpy.summary.</code><code class="descname">mean</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the mean with a single pass of the iterable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>iterable</strong> &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.online_variance">
+<code class="descclassname">itpy.summary.</code><code class="descname">online_variance</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#online_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.online_variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the variance with one pass of the iterable.
+This method allows for partial answers up to the procced value.</p>
+<p>Note, unless your are are certain that your data is shuffled,
+you will not get meaningful partial results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>iterable</strong> &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.reduce">
+<code class="descclassname">itpy.summary.</code><code class="descname">reduce</code><span class="sig-paren">(</span><em>iterable</em>, <em>reducer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a merged value using an associative reduce function,
+so as to reduce the iterable to a single value from left to right.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iterable</strong> &#8211; </li>
+<li><strong>reducer</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.sample">
+<code class="descclassname">itpy.summary.</code><code class="descname">sample</code><span class="sig-paren">(</span><em>iterable</em>, <em>max_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an iterator of <cite>max_size</cite> of randomly sampled elements from the original</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iterable</strong> &#8211; </li>
+<li><strong>max_size</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.size">
+<code class="descclassname">itpy.summary.</code><code class="descname">size</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain the size of the iterable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>iterable</strong> &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="itpy.summary.twopass_variance">
+<code class="descclassname">itpy.summary.</code><code class="descname">twopass_variance</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/itpy/summary.html#twopass_variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#itpy.summary.twopass_variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the variance with two passes of the iterable,
+once to calculate the mean, next to calculate the sum of squares.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>iterable</strong> &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Streaming Summary</a><ul>
+<li><a class="reference internal" href="#itpy-summary">itpy.summary</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="transforms.html" title="previous chapter">Streaming Transformations</a></li>
+      <li>Next: <a href="iio.html" title="next chapter">Streaming IO</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/itpy/summary.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Jason Liu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../_sources/itpy/summary.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
