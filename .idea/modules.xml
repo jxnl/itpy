@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$USER_HOME$/nyu/HPV/.idea/HPV.iml" filepath="$USER_HOME$/nyu/HPV/.idea/HPV.iml" />
+      <module fileurl="file://$USER_HOME$/nyu/Twipsy/.idea/Twipsy.iml" filepath="$USER_HOME$/nyu/Twipsy/.idea/Twipsy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../my_research/nyu_poly/TwitterAlcoholDetection/.idea/TwitterAlcoholDetection.iml" filepath="$PROJECT_DIR$/../my_research/nyu_poly/TwitterAlcoholDetection/.idea/TwitterAlcoholDetection.iml" />
+      <module fileurl="file://$USER_HOME$/Desktop/codecon/.idea/codecon.iml" filepath="$USER_HOME$/Desktop/codecon/.idea/codecon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/itpy.iml" filepath="$PROJECT_DIR$/.idea/itpy.iml" />
+    </modules>
+  </component>
+</project>

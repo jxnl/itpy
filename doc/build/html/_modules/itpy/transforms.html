@@ -1,0 +1,554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>itpy.transforms &mdash; it.py 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="it.py 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="itpy" href="../itpy.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for itpy.transforms</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">itpy.transforms</span>
+<span class="sd">~~~~~~~~~~~~~~~</span>
+
+<span class="sd">This module contains the all the combinators and other methods allowed on</span>
+<span class="sd">iterables. All functions must consume iterables as it&#39;s first argument</span>
+<span class="sd">and return and an iterable.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">itpy.helpers</span> <span class="kn">import</span> <span class="n">identity</span><span class="p">,</span> <span class="n">getitem</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span> <span class="kn">as</span> <span class="nn">it</span>
+<span class="kn">import</span> <span class="nn">types</span>
+
+
+<div class="viewcode-block" id="distinct"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.distinct">[docs]</a><span class="k">def</span> <span class="nf">distinct</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator with only the distinct elements of the previous.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">distincting</span><span class="p">(</span><span class="n">iterable_</span><span class="p">):</span>
+        <span class="n">set_of_distinct_values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterable_</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">set_of_distinct_values</span><span class="p">:</span>
+                <span class="n">set_of_distinct_values</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="n">i</span>
+
+    <span class="k">return</span> <span class="n">distincting</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="intercept"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.intercept">[docs]</a><span class="k">def</span> <span class="nf">intercept</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterable from the original one but intercept the value and</span>
+<span class="sd">    evaluate the function for the value.</span>
+<span class="sd">    This may be valuable for logging and debuging.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param function:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">intercepting</span><span class="p">(</span><span class="n">iterable_</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">iterable_</span><span class="p">:</span>
+            <span class="n">function</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">item</span>
+
+    <span class="k">return</span> <span class="n">intercepting</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="drop"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.drop">[docs]</a><span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make and iterator of the original iterator without the first n elements</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param n:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">counter</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">element</span></div>
+
+
+<div class="viewcode-block" id="dropwhile"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.dropwhile">[docs]</a><span class="k">def</span> <span class="nf">dropwhile</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that drops elements from the iterable as long as the</span>
+<span class="sd">    predicate is true</span>
+
+<span class="sd">    Note, the iterator does not produce any output until the predicate</span>
+<span class="sd">    first becomes false, so it may have a lengthy start-up time.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">dropwhile</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">iterable</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="filter"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.filter">[docs]</a><span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that filters elements from iterable returning only those</span>
+<span class="sd">    for which the predicate is True</span>
+<span class="sd">    If predicate is None, return the items that are true.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">predicate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="filterfalse"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.filterfalse">[docs]</a><span class="k">def</span> <span class="nf">filterfalse</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that filters elements from iterable returning only those</span>
+<span class="sd">    for which the predicate is False.</span>
+<span class="sd">    If predicate is None, return the items that are false</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="find"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.find">[docs]</a><span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Produce the first element in the iterable that satisfies the predicate</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">predicate</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="ow">and</span> <span class="n">counter</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">element</span></div>
+
+
+<div class="viewcode-block" id="flatmap"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.flatmap">[docs]</a><span class="k">def</span> <span class="nf">flatmap</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function_to_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that returns the elements of the lists produced</span>
+<span class="sd">    by mapping function_to_list onto the original iterable.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param function_to_list:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">list_block</span> <span class="o">=</span> <span class="n">function_to_list</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">result_value</span> <span class="ow">in</span> <span class="n">list_block</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">result_value</span></div>
+
+
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.flatten">[docs]</a><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator from a iterable of iterables</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">element_iterable</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">element_iterable</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">element</span></div>
+
+
+<div class="viewcode-block" id="fold"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.fold">[docs]</a><span class="k">def</span> <span class="nf">fold</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Folds the elements of this iterable using an associative binary operator</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param func:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">base</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">acc</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">acc</span></div>
+
+
+<div class="viewcode-block" id="forall"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.forall">[docs]</a><span class="k">def</span> <span class="nf">forall</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if predicate holds for all elements in iterator</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">predicate</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span></div>
+
+
+<div class="viewcode-block" id="groupby"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.groupby">[docs]</a><span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">identity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make a dict that returns consecutive keys and groups from the iterable</span>
+<span class="sd">    The key is computed each element by keyfunc.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param key:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">group_by_collection</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">key</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">):</span>
+            <span class="n">group_by_collection</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group_by_collection</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">group_by_collection</span></div>
+
+
+<div class="viewcode-block" id="grouped"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.grouped">[docs]</a><span class="k">def</span> <span class="nf">grouped</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator of elements partitioned by the n</span>
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param n:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">batch_window</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">cur_size</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">batch_window</span><span class="p">[</span><span class="n">cur_size</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+        <span class="n">cur_size</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">cur_size</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">batched</span> <span class="o">=</span> <span class="n">batch_window</span><span class="p">[:]</span>
+            <span class="n">batch_window</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+            <span class="n">cur_size</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">yield</span> <span class="n">batched</span></div>
+
+
+<div class="viewcode-block" id="has_definite_size"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.has_definite_size">[docs]</a><span class="k">def</span> <span class="nf">has_definite_size</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tests whether an iterable is know to have a finite size</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="s">&#39;__len__&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="map"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.map">[docs]</a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that computes the function using arguments</span>
+<span class="sd">    from the original iterable.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param function:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="max"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.max">[docs]</a><span class="k">def</span> <span class="nf">max</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :return max element:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">max</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">max</span> <span class="ow">and</span> <span class="n">element</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">:</span>
+            <span class="nb">max</span> <span class="o">=</span> <span class="n">element</span>
+    <span class="k">return</span> <span class="nb">max</span></div>
+
+
+<div class="viewcode-block" id="maxBy"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.maxBy">[docs]</a><span class="k">def</span> <span class="nf">maxBy</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param function:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="min"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.min">[docs]</a><span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">min</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">min</span> <span class="ow">and</span> <span class="n">element</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">:</span>
+            <span class="nb">min</span> <span class="o">=</span> <span class="n">element</span>
+    <span class="k">return</span> <span class="nb">min</span></div>
+
+
+<div class="viewcode-block" id="minBy"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.minBy">[docs]</a><span class="k">def</span> <span class="nf">minBy</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param function:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="partition"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.partition">[docs]</a><span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Partitions this an iterable collection</span>
+<span class="sd">    in two traversable collections according to a predicate.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">passes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">fails</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">predicate</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+            <span class="n">passes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fails</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">passes</span><span class="p">,</span> <span class="n">fails</span></div>
+
+
+<span class="c"># TODO</span>
+<div class="viewcode-block" id="permutations"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.permutations">[docs]</a><span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes iterable from permutations of iterable</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="c"># TODO</span>
+<div class="viewcode-block" id="intersect"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.intersect">[docs]</a><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="n">iterable1</span><span class="p">,</span> <span class="n">iterable2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns iterable of the multiset intersection of two iterables</span>
+
+<span class="sd">    :param iterable1:</span>
+<span class="sd">    :param iterable2:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="slice"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.slice">[docs]</a><span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that returns selected elements from the iterable.</span>
+<span class="sd">    If start is non-zero, then elements from the iterable are skipped</span>
+<span class="sd">    until start is reached. Afterward, elements are returned consecutively</span>
+<span class="sd">    unless step is set higher than one which results in items being skipped.</span>
+
+<span class="sd">    If stop is None, then iteration continues until the iterator is exhausted;</span>
+<span class="sd">    otherwise, it stops at the specified position. Unlike regular slicing,</span>
+<span class="sd">    slice() does not support negative values for start, stop, or step.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param args:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="size"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.size">[docs]</a><span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the size of the iterable, None if has no attr `__len__`</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iterable</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span></div>
+
+
+<div class="viewcode-block" id="sort"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.sort">[docs]</a><span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="nb">cmp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make and iterator that is sorted on a specific key, if key is None, sort on</span>
+<span class="sd">    natural ordering.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param cmp:</span>
+<span class="sd">    :param key:</span>
+<span class="sd">    :param reverse:</span>
+
+<span class="sd">    TODO: Make lazy</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sorted_iterable</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="nb">cmp</span><span class="o">=</span><span class="nb">cmp</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">sorted_iterable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="top"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.top">[docs]</a><span class="k">def</span> <span class="nf">top</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterable of the top max_size elements of the original iterable</span>
+<span class="sd">    sorted on keyfunc, if keyfunc is None sort on the natural ordering.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param max_size:</span>
+<span class="sd">    :param key:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># An import is done here to avoid polluting the namespace</span>
+    <span class="kn">from</span> <span class="nn">heapq</span> <span class="kn">import</span> <span class="n">heapreplace</span><span class="p">,</span> <span class="n">heapify</span>
+
+    <span class="n">top_k_values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="n">max_size</span><span class="p">:</span>
+            <span class="n">top_k_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">idx</span> <span class="o">==</span> <span class="n">max_size</span><span class="p">:</span>
+            <span class="n">heapify</span><span class="p">(</span><span class="n">top_k_values</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="n">max_size</span><span class="p">:</span>
+            <span class="n">heapreplace</span><span class="p">(</span><span class="n">top_k_values</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">top_k_values</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="take"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.take">[docs]</a><span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that contains the first n elements from the original</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param n:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">taking</span><span class="p">(</span><span class="n">iterable_</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">iterable_</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">e</span>
+
+    <span class="k">return</span> <span class="n">taking</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="takewhile"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.takewhile">[docs]</a><span class="k">def</span> <span class="nf">takewhile</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that returns elements from the iterable as long as the</span>
+<span class="sd">    predicate is true.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param predicate:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">takewhile</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="n">iterable</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="reduceby"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.reduceby">[docs]</a><span class="k">def</span> <span class="nf">reduceby</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">reducer</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">getitem</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">getitem</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that returns the merged values for each key using an</span>
+<span class="sd">    associative reduce function.The values contained in this iterable must be</span>
+<span class="sd">    2-tuples in the form (k, v).</span>
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param reducer:</span>
+<span class="sd">    :param key:</span>
+<span class="sd">    :param value:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">reducing</span><span class="p">(</span><span class="n">iterable_</span><span class="p">,</span> <span class="n">reducer_</span><span class="p">,</span> <span class="n">key_</span><span class="p">,</span> <span class="n">value_</span><span class="p">):</span>
+        <span class="n">group_by</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterable_</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_</span><span class="p">(</span><span class="n">element</span><span class="p">),</span> <span class="n">value_</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">group_by</span><span class="p">:</span>
+                <span class="n">group_by</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">reducer_</span><span class="p">(</span><span class="n">group_by</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">group_by</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">for</span> <span class="n">ke</span> <span class="ow">in</span> <span class="n">group_by</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">ke</span><span class="p">,</span> <span class="n">group_by</span><span class="p">[</span><span class="n">ke</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">reducing</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">reducer</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="toArray"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.toArray">[docs]</a><span class="k">def</span> <span class="nf">toArray</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">array</span>
+
+    <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="toList"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.toList">[docs]</a><span class="k">def</span> <span class="nf">toList</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="union"><a class="viewcode-back" href="../../itpy/transforms.html#itpy.transforms.union">[docs]</a><span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">*</span><span class="n">iterables</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an iterator that returns elements from the first iterable until it</span>
+<span class="sd">    is exhausted, then proceeds to the next iterable, until all of the iterables</span>
+<span class="sd">    are exhausted. Used for treating consecutive sequences as a single sequence.</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :param iterables:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">*</span><span class="n">iterables</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../itpy.html">itpy</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Jason Liu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

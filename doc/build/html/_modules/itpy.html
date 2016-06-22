@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>itpy &mdash; it.py 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="it.py 0.0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for itpy</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">itpy</span>
+<span class="sd">~~~~</span>
+
+<span class="sd">Built on the back of itertools, `itpy` allows easy list processing through chaining methods.</span>
+<span class="sd">Everything is a lazy evaluated generating function so nothing happens until you call a method</span>
+<span class="sd">with side effects. This allows for a fast memory effecient &#39;keep what you need&#39; way of processing</span>
+<span class="sd">large ammounts of data!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">itpy.decorators</span> <span class="kn">import</span> <span class="n">iter_wraps</span><span class="p">,</span> <span class="n">term_wraps</span>
+<span class="kn">from</span> <span class="nn">itpy.helpers</span> <span class="kn">import</span> <span class="n">identity</span><span class="p">,</span> <span class="n">getitem</span>
+<span class="kn">import</span> <span class="nn">itpy.transforms</span> <span class="kn">as</span> <span class="nn">transforms</span>
+<span class="kn">import</span> <span class="nn">itpy.summary</span> <span class="kn">as</span> <span class="nn">summary</span>
+<span class="kn">import</span> <span class="nn">itpy.iio</span> <span class="kn">as</span> <span class="nn">iio</span>
+
+
+<div class="viewcode-block" id="Itpy"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy">[docs]</a><span class="k">class</span> <span class="nc">Itpy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">VALUE</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">itpy</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_src</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">itpy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="o">=</span> <span class="n">itpy</span><span class="o">.</span><span class="n">_stack</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_src</span> <span class="o">=</span> <span class="n">itpy</span><span class="o">.</span><span class="n">_src</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c"># transforms</span>
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">distinct</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.distinct"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.distinct">[docs]</a>    <span class="k">def</span> <span class="nf">distinct</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.intercept"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.intercept">[docs]</a>    <span class="k">def</span> <span class="nf">intercept</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">drop</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.drop"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.drop">[docs]</a>    <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">dropwhile</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.dropwhile"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.dropwhile">[docs]</a>    <span class="k">def</span> <span class="nf">dropwhile</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">filter</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.filter"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">filterfalse</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.filterfalse"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.filterfalse">[docs]</a>    <span class="k">def</span> <span class="nf">filterfalse</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">find</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.find"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.find">[docs]</a>    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">flatmap</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.flatmap"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.flatmap">[docs]</a>    <span class="k">def</span> <span class="nf">flatmap</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function_to_list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">flatten</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.flatten"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.flatten">[docs]</a>    <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">fold</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.fold"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.fold">[docs]</a>    <span class="k">def</span> <span class="nf">fold</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">grouped</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.grouped"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.grouped">[docs]</a>    <span class="k">def</span> <span class="nf">grouped</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">has_definite_size</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.has_definite_size"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.has_definite_size">[docs]</a>    <span class="k">def</span> <span class="nf">has_definite_size</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">map</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.map"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.max"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.max">[docs]</a>    <span class="k">def</span> <span class="nf">max</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">maxBy</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.maxBy"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.maxBy">[docs]</a>    <span class="k">def</span> <span class="nf">maxBy</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">min</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.min"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.min">[docs]</a>    <span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">minBy</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.minBy"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.minBy">[docs]</a>    <span class="k">def</span> <span class="nf">minBy</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">partition</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.partition"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.partition">[docs]</a>    <span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">permutations</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.permutations"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.permutations">[docs]</a>    <span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">intersect</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.intersect"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.intersect">[docs]</a>    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">slice</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.slice"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.slice">[docs]</a>    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">sort</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.sort"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">top</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.top"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.top">[docs]</a>    <span class="k">def</span> <span class="nf">top</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">take</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.take"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.take">[docs]</a>    <span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">takewhile</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.takewhile"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.takewhile">[docs]</a>    <span class="k">def</span> <span class="nf">takewhile</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">reduceby</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.reduceby"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.reduceby">[docs]</a>    <span class="k">def</span> <span class="nf">reduceby</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">reducer</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">getitem</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">getitem</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">toArray</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.toArray"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.toArray">[docs]</a>    <span class="k">def</span> <span class="nf">toArray</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">toList</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.toList"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.toList">[docs]</a>    <span class="k">def</span> <span class="nf">toList</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">transforms</span><span class="o">.</span><span class="n">union</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.union"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="o">*</span><span class="n">iterables</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">(</span><span class="nb">iter</span><span class="o">=</span><span class="n">iterable</span><span class="p">)</span></div>
+
+    <span class="c"># summary</span>
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">for_all</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.for_all"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.for_all">[docs]</a>    <span class="k">def</span> <span class="nf">for_all</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">predicate</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">groupby</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.groupby"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.groupby">[docs]</a>    <span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">keyfunc</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">identity</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">for_each</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.for_each"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.for_each">[docs]</a>    <span class="k">def</span> <span class="nf">for_each</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.size"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.size">[docs]</a>    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">reduce</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.reduce"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">reducer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.frequency"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.frequency">[docs]</a>    <span class="k">def</span> <span class="nf">frequency</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.mean"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">twopass_variance</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.twopass_variance"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.twopass_variance">[docs]</a>    <span class="k">def</span> <span class="nf">twopass_variance</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.sample"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">max_size</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="nd">@term_wraps</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">online_variance</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.online_variance"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.online_variance">[docs]</a>    <span class="k">def</span> <span class="nf">online_variance</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="o">.</span><span class="n">VALUE</span></div>
+
+    <span class="c"># iio</span>
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">iio</span><span class="o">.</span><span class="n">from_file</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.from_file"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="n">path_to_file</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">()</span></div>
+
+    <span class="nd">@iter_wraps</span><span class="p">(</span><span class="n">iio</span><span class="o">.</span><span class="n">from_stdin</span><span class="p">)</span>
+<div class="viewcode-block" id="Itpy.from_stdin"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.from_stdin">[docs]</a>    <span class="k">def</span> <span class="nf">from_stdin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Itpy</span><span class="p">()</span></div>
+
+    <span class="c"># Sketches</span>
+
+    <span class="c"># @term_wraps(sketch.count_distinct_approx)</span>
+    <span class="c"># def count_distinct_approx(self, init_cap=200, err_rate=0.001):</span>
+    <span class="c"># return Itpy.VALUE</span>
+
+    <span class="c"># @term_wraps(sketch.to_bloomfilter)</span>
+    <span class="c"># def to_bloomfilter(self, init_cap=200, err_rate=0.001):</span>
+    <span class="c"># return Itpy.VALUE</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># Collect the elements of the iter into a list</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Itpy({}).{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_src</span><span class="p">,</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">__iter__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">item</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+<div class="viewcode-block" id="Itpy.next"><a class="viewcode-back" href="../itpy/itpy.html#itpy.Itpy.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Jason Liu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
