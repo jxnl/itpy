@@ -32,135 +32,178 @@ class Itpy(object):
         else:
             self._stack = []
 
-    """
-    Transformations
-    ~~~~~~~~~~~~~~~
-
-    These methods provide you with the power to transforms your Itpy datastreams into other data streams through
-    chaining methods together.
-    """
-
-    @iter_wraps(transforms.map)
-    def map(self, function):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.flatmap)
-    def flatmap(self, function_to_list):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.filter)
-    def filter(self, predicate):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.filterfalse)
-    def filterfalse(self, predicate):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.sort)
-    def sort(self, cmp=None, key=None, reverse=False):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.reduceby)
-    def reduceby(self, reducer, key=getitem(0), value=getitem(1)):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.groupby)
-    def groupby(self, key=identity, value=identity):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.union)
-    def union(self, *iterable):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.top)
-    def top(self, max_size=1, key=None):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.takewhile)
-    def takewhile(self, predicate):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.dropwhile)
-    def dropwhile(self, predicate):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.take)
-    def take(self, max):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.slice)
-    def slice(self, *args):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.sample)
-    def sample(self, max_size):
-        return Itpy(itpy=self)
-
-    @iter_wraps(transforms.batch)
-    def batch(self, size):
-        return Itpy(itpy=self)
-
+    # transforms
     @iter_wraps(transforms.distinct)
-    def distinct(self):
-        return Itpy(itpy=self)
+    def distinct(iterable):
+        return Itpy(iter=iterable)
 
     @iter_wraps(transforms.intercept)
-    def intercept(self, function):
-        return Itpy(itpy=self)
+    def intercept(iterable, function):
+        return Itpy(iter=iterable)
 
-    @term_wraps(summary.frequency)
-    def frequency(self):
+    @iter_wraps(transforms.drop)
+    def drop(iterable, n):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.dropwhile)
+    def dropwhile(iterable, predicate):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.filter)
+    def filter(iterable, predicate):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.filterfalse)
+    def filterfalse(iterable, predicate):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.find)
+    def find(iterable, predicate, n=1):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.flatmap)
+    def flatmap(iterable, function_to_list):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.flatten)
+    def flatten(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.fold)
+    def fold(iterable, func, base):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.grouped)
+    def grouped(iterable, n):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.has_definite_size)
+    def has_definite_size(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.map)
+    def map(iterable, function):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.max)
+    def max(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.maxBy)
+    def maxBy(iterable, function):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.min)
+    def min(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.minBy)
+    def minBy(iterable, function):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.partition)
+    def partition(iterable, predicate):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.permutations)
+    def permutations(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.intersect)
+    def intersect(iterable, other):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.slice)
+    def slice(iterable, *args):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.size)
+    def size(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.sort)
+    def sort(iterable, **kwargs):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.top)
+    def top(iterable, max_size=1, key=None):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.take)
+    def take(iterable, n):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.takewhile)
+    def takewhile(iterable, predicate):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.reduceby)
+    def reduceby(iterable, reducer, key=getitem(0), value=getitem(1)):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.toArray)
+    def toArray(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.toList)
+    def toList(iterable):
+        return Itpy(iter=iterable)
+
+    @iter_wraps(transforms.union)
+    def union(iterable, *iterables):
+        return Itpy(iter=iterable)
+
+    # summary
+    @term_wraps(summary.for_all)
+    def for_all(iterable, predicate):
         return Itpy.VALUE
 
-    @term_wraps(summary.mean)
-    def mean(self):
-        return Itpy.VALUE
-
-    @term_wraps(summary.online_variance)
-    def variance(self):
+    @term_wraps(summary.groupby)
+    def groupby(iterable, keyfunc=identity, value=identity):
         return Itpy.VALUE
 
     @term_wraps(summary.for_each)
-    def for_each(self, function):
-        return Itpy.VALUE
-
-    @term_wraps(summary.reduce)
-    def reduce(self, reducer):
+    def for_each(iterable, function):
         return Itpy.VALUE
 
     @term_wraps(summary.size)
-    def size(self):
+    def size(iterable):
         return Itpy.VALUE
 
-    @staticmethod
+    @term_wraps(summary.reduce)
+    def reduce(iterable, reducer):
+        return Itpy.VALUE
+
+    @term_wraps(summary.frequency)
+    def frequency(iterable):
+        return Itpy.VALUE
+
+    @term_wraps(summary.mean)
+    def mean(iterable):
+        return Itpy.VALUE
+
+    @term_wraps(summary.twopass_variance)
+    def twopass_variance(iterable):
+        return Itpy.VALUE
+
+    @term_wraps(summary.sample)
+    def sample(iterable, max_size):
+        return Itpy.VALUE
+
+    @term_wraps(summary.online_variance)
+    def online_variance(iterable):
+        return Itpy.VALUE
+
+    # iio
     @iter_wraps(iio.from_file)
     def from_file(path_to_file, buffer=1):
         return Itpy()
 
-    @staticmethod
     @iter_wraps(iio.from_stdin)
     def from_stdin(self):
         return Itpy()
 
-    @term_wraps(iio.to_stdout)
-    def to_stdout(self):
-        return Itpy.VALUE
-
-    @term_wraps(iio.to_file)
-    def to_file(self, path_to_file):
-        return Itpy.VALUE
-
-    """
-    Sketching methods
-    ~~~~~~~~~~~~~~~~~
-
-    These algorithms have limited memory available to them (much less than the input size) and also limited
-    processing time per item. These constraints may mean that an algorithm produces an approximate answer
-    based on a summary or "sketch" of the data stream in memory.
-
-    TODO : HyperLogLog, Count-min
-
-    """
+    # Sketches
 
     # @term_wraps(sketch.count_distinct_approx)
     # def count_distinct_approx(self, init_cap=200, err_rate=0.001):
@@ -169,7 +212,6 @@ class Itpy(object):
     # @term_wraps(sketch.to_bloomfilter)
     # def to_bloomfilter(self, init_cap=200, err_rate=0.001):
     # return Itpy.VALUE
-
 
     @property
     def _(self):  # Collect the elements of the iter into a list
@@ -185,6 +227,9 @@ class Itpy(object):
     def __iter__(self):
         for item in self._iter:
             yield item
+
+    def __len__(self):
+        return -1
 
     def next(self):
         return self._iter.next()

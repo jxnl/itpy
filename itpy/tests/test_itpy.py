@@ -15,9 +15,7 @@ from functools import reduce
 
 from itpy import Itpy as _
 
-# noinspection PyPep8Naming
 class test_itpy(unittest.TestCase):
-
     def setUp(self):
         self.seq = list(range(10))
         self.mapf = lambda x: x ** 2
@@ -154,13 +152,6 @@ class test_itpy(unittest.TestCase):
         self.assertEqual(
             lst.top(10000)._,
             sorted(self.seq, reverse=True)
-        )
-
-    def test_sample(self):
-        lst = _(self.seq)
-        self.assertEqual(
-            lst.sample(4).size(),
-            4
         )
 
     def test_distinct(self):

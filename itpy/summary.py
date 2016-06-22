@@ -8,9 +8,43 @@ This module contains functions that compute summaries over the iterable.
 
 """
 from __future__ import division
-from collections import Counter
+from collections import Counter, defaultdict
 from functools import reduce as rd
 
+from itpy.helpers import  identity
+
+import types
+
+def for_all(iterable, predicate):
+    """
+    Test if predicate holds for all elements in iterator
+
+    :param iterable:
+    :param predicate:
+    :return:
+    """
+    for element in iterable:
+        if not predicate(element):
+            return False
+    return True
+
+def groupby(iterable, keyfunc=identity, value=identity):
+    """
+    Make a dict that returns consecutive keys and groups from the iterable
+    The key is computed each element by keyfunc.
+
+    :param iterable:
+    :param key:
+    """
+    group_by_collection = defaultdict(list)
+    for element in iterable:
+        k = keyfunc(element)
+        if isinstance(value, types.FunctionType):
+            group_by_collection[k].append(value(element))
+        else:
+            group_by_collection[k].append(value)
+
+    return group_by_collection
 
 def for_each(iterable, function):
     """
@@ -50,7 +84,6 @@ def reduce(iterable, reducer):
     value = rd(reducer, iterable)
 
     return value
-
 
 def frequency(iterable):
     """
@@ -112,6 +145,27 @@ def twopass_variance(iterable):
 
     ret_result = sum_of_squares / (size_accumilator - 1)
     return ret_result
+
+
+def sample(iterable, max_size):
+    """
+    Make an iterator of `max_size` of randomly sampled elements from the original
+
+    :param iterable:
+    :param max_size:
+    """
+    from random import randint
+
+    reservoir = list()
+
+    for (i, item) in enumerate(iterable):
+        switch = randint(0, 1)
+        if len(reservoir) < max_size:
+            reservoir.append(item)
+        elif switch < max_size:
+            reservoir[switch] = item
+
+    return iter(reservoir)
 
 
 def online_variance(iterable):
