@@ -35,123 +35,123 @@ class Itpy(object):
     # transforms
     @iter_wraps(transforms.distinct)
     def distinct(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.intercept)
     def intercept(iterable, function):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.drop)
     def drop(iterable, n):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.dropwhile)
     def dropwhile(iterable, predicate):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.filter)
     def filter(iterable, predicate):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.filterfalse)
     def filterfalse(iterable, predicate):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.find)
     def find(iterable, predicate, n=1):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.flatmap)
     def flatmap(iterable, function_to_list):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.flatten)
     def flatten(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.fold)
     def fold(iterable, func, base):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.grouped)
     def grouped(iterable, n):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.has_definite_size)
     def has_definite_size(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.map)
     def map(iterable, function):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.max)
     def max(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.maxBy)
     def maxBy(iterable, function):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.min)
     def min(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.minBy)
     def minBy(iterable, function):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.partition)
     def partition(iterable, predicate):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.permutations)
     def permutations(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.intersect)
     def intersect(iterable, other):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.slice)
     def slice(iterable, *args):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.size)
     def size(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.sort)
     def sort(iterable, **kwargs):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.top)
     def top(iterable, max_size=1, key=None):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.take)
     def take(iterable, n):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.takewhile)
     def takewhile(iterable, predicate):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.reduceby)
     def reduceby(iterable, reducer, key=getitem(0), value=getitem(1)):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.toArray)
     def toArray(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.toList)
     def toList(iterable):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     @iter_wraps(transforms.union)
     def union(iterable, *iterables):
-        return Itpy(iter=iterable)
+        return Itpy(itpy=iterable)
 
     # summary
     @term_wraps(summary.for_all)
@@ -191,7 +191,7 @@ class Itpy(object):
         return Itpy.VALUE
 
     @term_wraps(summary.online_variance)
-    def online_variance(iterable):
+    def variance(iterable):
         return Itpy.VALUE
 
     # iio
@@ -227,9 +227,6 @@ class Itpy(object):
     def __iter__(self):
         for item in self._iter:
             yield item
-
-    def __len__(self):
-        return -1
 
     def next(self):
         return self._iter.next()

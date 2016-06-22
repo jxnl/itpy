@@ -71,9 +71,9 @@ class test_itpy(unittest.TestCase):
     def test_groupby(self):
         lst = _(self.seq)
         self.assertEqual(
-            lst.groupby(self.evenf)._,
-            [(0, [0, 2, 4, 6, 8]),
-             (1, [1, 3, 5, 7, 9])]
+            lst.groupby(self.evenf),
+            {0: [0, 2, 4, 6, 8],
+             1: [1, 3, 5, 7, 9]}
         )
 
     def test_flat_reduce(self):
