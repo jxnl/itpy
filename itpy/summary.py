@@ -8,9 +8,43 @@ This module contains functions that compute summaries over the iterable.
 
 """
 from __future__ import division
-from collections import Counter
+from collections import Counter, defaultdict
 from functools import reduce as rd
 
+from itpy.helpers import  identity
+
+import types
+
+def for_all(iterable, predicate):
+    """
+    Test if predicate holds for all elements in iterator
+
+    :param iterable:
+    :param predicate:
+    :return:
+    """
+    for element in iterable:
+        if not predicate(element):
+            return False
+    return True
+
+def groupby(iterable, keyfunc=identity, value=identity):
+    """
+    Make a dict that returns consecutive keys and groups from the iterable
+    The key is computed each element by keyfunc.
+
+    :param iterable:
+    :param key:
+    """
+    group_by_collection = defaultdict(list)
+    for element in iterable:
+        k = keyfunc(element)
+        if isinstance(value, types.FunctionType):
+            group_by_collection[k].append(value(element))
+        else:
+            group_by_collection[k].append(value)
+
+    return group_by_collection
 
 def for_each(iterable, function):
     """

@@ -10,11 +10,8 @@ and return and an iterable.
 
 """
 
-from collections import defaultdict
-from itpy.helpers import identity, getitem, haslen
-
+from itpy.helpers import getitem
 import itertools as it
-import types
 
 
 def distinct(iterable):
@@ -161,42 +158,6 @@ def fold(iterable, func, base):
         acc = func(acc, element)
     return acc
 
-
-#TODO Move to summary
-def for_all(iterable, predicate):
-    """
-    Test if predicate holds for all elements in iterator
-
-    :param iterable:
-    :param predicate:
-    :return:
-    """
-    for element in iterable:
-        if not predicate(element):
-            return False
-    return True
-
-# TODO Not sure where this belongs, unless we make it return a iterable.
-# TODO Refer to itertools.groupby implementation
-def groupby(iterable, keyfunc=identity, value=identity):
-    """
-    Make a dict that returns consecutive keys and groups from the iterable
-    The key is computed each element by keyfunc.
-
-    :param iterable:
-    :param key:
-    """
-    group_by_collection = defaultdict(list)
-    for element in iterable:
-        k = keyfunc(element)
-        if isinstance(value, types.FunctionType):
-            group_by_collection[k].append(value(element))
-        else:
-            group_by_collection[k].append(value)
-
-    return group_by_collection
-
-
 def grouped(iterable, n):
     """
     Make an iterator of elements partitioned by the n
@@ -307,15 +268,16 @@ def permutations(iterable):
     pass
 
 
-def intersect(iterable1, iterable2):
+# TODO
+def intersect(iterable, other):
     """
     Returns iterable of the multiset intersection of two iterables
 
-    :param iterable1:
-    :param iterable2:
+    :param iterable:
+    :param other:
+
     """
-    if haslen(iterable1) and haslen(iterable2):
-        (iterable1)
+    return 0
 
 
 def slice(iterable, *args):
