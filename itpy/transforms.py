@@ -202,11 +202,14 @@ def max(iterable):
     :param iterable:
     :return max element:
     """
-    max = None
-    for element in iterable:
-        if max and element > max:
-            max = element
-    return max
+    if (len(iterable) == 0):
+        raise ValueError('Empty iterable')
+    else:
+        max = iterable[0]
+        for element in iterable:
+            if element > max:
+                max = element
+        return max
 
 
 def maxBy(iterable, function):
@@ -224,11 +227,14 @@ def min(iterable):
     :param iterable:
     :return:
     """
-    min = None
-    for element in iterable:
-        if min and element < min:
-            min = element
-    return min
+    if (len(iterable) == 0):
+        raise ValueError('Empty iterable')
+    else:
+        min = iterable[0]
+        for element in iterable:
+            if element < min:
+                min = element
+            return min
 
 
 def minBy(iterable, function):
